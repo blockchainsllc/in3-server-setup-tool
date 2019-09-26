@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function getSteps() {
-  return ['Select campaign settings', 'Create an ad group', 'Create an ad'];
+  return ['Select Settings', 'Advance Settings', 'Output options'];
 }
 
 function getStepContent(step) {
@@ -29,9 +29,9 @@ function getStepContent(step) {
     case 0:
       return (<Settings></Settings>);
     case 1:
-      return 'What is an ad group anyways?';
+      return 'Advance Settings';
     case 2:
-      return 'This is the bit I really care about!';
+      return 'Output options';
     default:
       return 'Unknown step';
   }
@@ -108,7 +108,10 @@ export default function HorizontalLinearStepper() {
         {activeStep === steps.length ? (
           <div>
             <Typography className={classes.instructions}>
-              All steps completed - you&apos;re finished
+            
+  "privateKey": "0xc858a0f49ce12df65031ba0eb0b353abc74f93f8ccd43df9682fd2e2293a4db3",
+  "rpcUrl": "http://rpc-kovan.slock.it"
+
             </Typography>
             <Button onClick={handleReset} className={classes.button}>
               Reset

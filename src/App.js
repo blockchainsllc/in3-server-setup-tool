@@ -6,7 +6,7 @@ import PaperComp from './Components/PaperComp'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import Wizard from './Components/Wizard'
-import InfoCard from './Components/InfoCard'
+import InfoFancyCard from './Components/InfoFancyCard'
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
         <CssBaseline />
         <Container maxWidth="lg">
           <br />
-          <InfoCard></InfoCard>
+          <InfoFancyCard></InfoFancyCard>
           <br />
           <PaperComp>
             <Wizard></Wizard>
