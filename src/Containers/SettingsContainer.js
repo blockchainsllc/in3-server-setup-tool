@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import SettingsComponent from '../Components/SettingsComponent'
+import SettingsComponent from '../Components/SettingsComponent';
+import ethWallet from 'ethereumjs-wallet';
 
 export default class SettingsContainer extends Component {
     constructor(props) {
@@ -37,11 +38,21 @@ export default class SettingsContainer extends Component {
         alert(this.state.orgname)
     }
 
+    generatePrivateKey = (e) => {
+        const wallet = ethWallet.generate();
+        //console.log("privateKey: " + wallet.getPrivateKeyString());
+        //console.log("address: " + wallet.getAddressString());
+        this.setState({ privatekey : wallet.getPrivateKeyString() });
+   
+        //alert(this.state.privatekey);
+    }
+
     render() {
         return (
             <SettingsComponent
                 handleChange={this.handleChange}
                 genConfig={this.generateConfig}
+                genPrivateKey={this.generatePrivateKey}
 
                 handleSubmitF={this.handleSubmit}
                 orgname={this.state.orgname}

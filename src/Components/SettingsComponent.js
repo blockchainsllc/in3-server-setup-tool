@@ -212,7 +212,7 @@ const SettingsComponent = (props) => {
                     </Grid>
 
                     <Grid item xs={2}>
-                        <Button variant="contained" color="primary" className={classes.button}>Generate Private Key</Button>
+                        <Button variant="contained" color="primary" className={classes.button} onClick={props.genPrivateKey} >Generate Private Key</Button>
                     </Grid>
 
                     <Grid item xs={12}>
