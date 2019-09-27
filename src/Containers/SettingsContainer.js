@@ -23,7 +23,7 @@ export default class SettingsContainer extends Component {
 
             capabilities: '',
             deposit: '',
-            timeout: '',
+            in3timeout: '',
             ethnodeurl: '',
             outputData: ''
         }
@@ -40,8 +40,10 @@ export default class SettingsContainer extends Component {
         const { id, value } = e.target;
         let newState = Object.assign({}, this.props);
 
-        if (e.target.type == 'radio') {
+        if (e.target.name=='network') {
             newState["noderegistry"] = defaultConfig.servers[this.NW[value]].contract;
+        }
+        if (e.target.type == 'radio') {
             newState[e.target.name] = value;
         }
         else
@@ -98,7 +100,6 @@ export default class SettingsContainer extends Component {
         - --pruning-memory=30000                                # limit storage";
 
         //const { id, value } = e.target;
-        //alert(this.state.logslevel);
 
         let newState = Object.assign({}, this.props);
         newState['outputData'] = dockerConf;
@@ -112,8 +113,13 @@ export default class SettingsContainer extends Component {
         //console.log("address: " + wallet.getAddressString());
         this.setState({ privatekey: wallet.getPrivateKeyString() });
 
-        //alert(this.state.privatekey);
     }
+
+    handleClose = () => {
+        let newState = Object.assign({}, this.props);
+        newState['outputData'] = undefined;
+        this.setState(newState);
+    };
 
 
     render() {
@@ -124,7 +130,6 @@ export default class SettingsContainer extends Component {
                     genConfig={this.generateConfig}
                     genPrivateKey={this.generatePrivateKey}
 
-                    handleSubmitF={this.handleSubmit}
                     orgname={this.state.orgname}
                     profileicon={this.state.profileicon}
                     description={this.state.description}
@@ -136,15 +141,17 @@ export default class SettingsContainer extends Component {
                     privatekey={this.state.privatekey}
                     keystorepath={this.state.keystorepath}
                     keyphrase={this.state.keyphrase}
+
                     capabilities={this.state.capabilities}
                     deposit={this.state.deposit}
-                    timeout={this.state.timeout}
+                    in3timeout={this.state.in3timeout}
                     ethnodeurl={this.state.ethnodeurl}
                 >
                 </SettingsComponent>
 
                 <DialogComponent
                     outputData={this.state.outputData}
+                    handleChange={this.handleClose}
                 >
 
                 </DialogComponent>

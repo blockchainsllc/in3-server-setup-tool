@@ -20,8 +20,6 @@ import Button from '@material-ui/core/Button';
 import { isContinueStatement } from '@babel/types';
 import { inherits } from 'util';
 
-
-
 const useStyles = makeStyles(theme => ({
     container: {
         flexWrap: 'wrap',
@@ -267,31 +265,31 @@ const SettingsComponent = (props) => {
                     <Grid item xs={6}>
                         <FormControl fullWidth className={classes.margin} component="fieldset">
                             <FormLabel component="legend">Node Capabilities</FormLabel>
-                            <RadioGroup aria-label="position" name="position" value={props.capabilities} onChange={props.handleChange} row>
+                            <RadioGroup aria-label="position" name="capabilities" value={props.capabilities} onChange={props.handleChange} row>
 
                                 <FormControlLabel
-                                    value="start"
+                                    value="Proof"
                                     control={<Radio color="primary" />}
                                     label="Proof"
                                     labelPlacement="start"
                                 />
 
                                 <FormControlLabel
-                                    value="start"
+                                    value="Multi chain"
                                     control={<Radio color="primary" />}
                                     label="Multi chain"
                                     labelPlacement="start"
                                 />
 
                                 <FormControlLabel
-                                    value="start"
+                                    value="Archive"
                                     control={<Radio color="primary" />}
                                     label="Archive"
                                     labelPlacement="start"
                                 />
 
                                 <FormControlLabel
-                                    value="start"
+                                    value="Http"
                                     control={<Radio color="primary" />}
                                     label="Http"
                                     labelPlacement="start"
@@ -304,7 +302,7 @@ const SettingsComponent = (props) => {
                     <Grid item xs={6}>
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
-                                id="outlined-name"
+                                id="deposit"
                                 label="Deposit ( Ethers )"
                                 className={classes.textField}
                                 value={props.deposit}
@@ -318,10 +316,10 @@ const SettingsComponent = (props) => {
                     <Grid item xs={6}>
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
-                                id="outlined-name"
+                                id="in3timeout"
                                 label="IN3 Timeout (ms)"
                                 className={classes.textField}
-                                value={props.timeout}
+                                value={props.in3timeout}
                                 onChange={props.handleChange}
                                 variant="outlined"
                                 helperText="Timeout after which the owner is allowed to receive its stored deposit"
@@ -332,7 +330,7 @@ const SettingsComponent = (props) => {
                     <Grid item xs={6}>
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
-                                id="outlined-name"
+                                id="ethnodeurl"
                                 label="Ethereum Node URL"
                                 className={classes.textField}
                                 value={props.ethnodeurl}

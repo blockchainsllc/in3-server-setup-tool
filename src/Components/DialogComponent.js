@@ -53,26 +53,26 @@ const DialogActions = withStyles(theme => ({
 
 const downloadTxtFile = () => {
     const element = document.createElement("a");
-    const file = new Blob([document.getElementById('dockerOutPut').value], {type: 'text/plain'});
+    const file = new Blob([document.getElementById('dockerOutPut').value], { type: 'text/plain' });
     element.href = URL.createObjectURL(file);
     element.download = "docker-compose.yml";
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
-  }
+}
 
 const DialogComponent = (props) => {
 
     var openDialog = ((props.outputData == undefined || props.outputData.length <= 0) ? false : true);
 
-    const handleClose = () => {
+    /*const props.handleChange = () => {
         openDialog = false;
-    };
+    };*/
 
     return (
         <div>
 
-            <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={openDialog} maxWidth='lg'>
-                <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+            <Dialog onClose={props.handleChange} aria-labelledby="customized-dialog-title" open={openDialog} maxWidth='lg'>
+                <DialogTitle id="customized-dialog-title" onClose={props.handleChange}>
                     IN3 Server
         </DialogTitle>
                 <DialogContent dividers>
@@ -99,10 +99,8 @@ const DialogComponent = (props) => {
           </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                        Save changes
-          </Button>
-          <Button onClick={downloadTxtFile}>Download Docker File</Button>
+                    <Button onClick={downloadTxtFile}>Download Docker File</Button>
+                    <Button onClick={props.handleChange} color="primary">Close</Button>
                 </DialogActions>
             </Dialog>
         </div>
