@@ -65,20 +65,19 @@ export default class SettingsContainer extends Component {
 
         dockerConf += "\n\
               ports:\n\
-            - 8500:8500/tcp                                         # open the port 8500 to be accessed by the public\n\
+            - 8500:8500/tcp                                         # open the port 8500 to be accessed by the public\n\n\
             commands:\n";
 
         if (this.state.keystorepath && this.state.keyphrase) {
             dockerConf +=
-                "- --privateKey=/secure/" + (this.state.keystorepath.replace(/^.*[\\\/]/, '')) + "                       # internal path to the key\n\
+            "            - --privateKey=/secure/" + (this.state.keystorepath.replace(/^.*[\\\/]/, '')) + "                       # internal path to the key\n\
             - --privateKeyPassphrase="+ (this.state.keyphrase) + "                          # passphrase to unlock the key\n";
         }
         else {
-            dockerConf += "- --privateKey=" + this.state.privatekey;
+            dockerConf += "            - --privateKey=" + this.state.privatekey;
         }
 
         dockerConf += "\n\
-            command:\n\
             - --chain="+ this.NW[this.state.network] + "                                           # chain (Kovan)\n\
             - --rpcUrl=http://incubed-parity:8545                   # URL of the Kovan client\n\
             - --registry="+ this.state.noderegistry + " # URL of the Incubed registry\n";
@@ -115,7 +114,6 @@ export default class SettingsContainer extends Component {
 
         //alert(this.state.privatekey);
     }
-
 
 
     render() {

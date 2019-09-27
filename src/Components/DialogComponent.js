@@ -51,6 +51,15 @@ const DialogActions = withStyles(theme => ({
     },
 }))(MuiDialogActions);
 
+const downloadTxtFile = () => {
+    const element = document.createElement("a");
+    const file = new Blob([document.getElementById('dockerOutPut').value], {type: 'text/plain'});
+    element.href = URL.createObjectURL(file);
+    element.download = "docker-compose.yml";
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+  }
+
 const DialogComponent = (props) => {
 
     var openDialog = ((props.outputData == undefined || props.outputData.length <= 0) ? false : true);
@@ -73,7 +82,7 @@ const DialogComponent = (props) => {
 
                     <TextField
                         fullWidth
-                        id="outlined-multiline-static"
+                        id="dockerOutPut"
                         label="Output IN3 Docker"
                         multiline
                         rows="8"
@@ -93,6 +102,7 @@ const DialogComponent = (props) => {
                     <Button onClick={handleClose} color="primary">
                         Save changes
           </Button>
+          <Button onClick={downloadTxtFile}>Download Docker File</Button>
                 </DialogActions>
             </Dialog>
         </div>
