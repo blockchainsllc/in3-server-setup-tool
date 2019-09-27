@@ -5,8 +5,7 @@ import AppBar from './Components/AppBar'
 import PaperComp from './Components/PaperComp'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
-import Wizard from './Components/Wizard'
-import Settings from './Components/Settings'
+import SettingsContainer from './Containers/SettingsContainer';
 import InfoFancyCard from './Components/InfoFancyCard'
 
 function App() {
@@ -20,9 +19,7 @@ function App() {
           <br />
           <InfoFancyCard></InfoFancyCard>
           <br />
-          <Settings></Settings>
-
-
+          <SettingsContainer></SettingsContainer>
         </Container>
       </React.Fragment>
 
