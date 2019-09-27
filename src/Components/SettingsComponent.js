@@ -20,32 +20,33 @@ import Button from '@material-ui/core/Button';
 import { isContinueStatement } from '@babel/types';
 import { inherits } from 'util';
 
+
+
+const useStyles = makeStyles(theme => ({
+    container: {
+        flexWrap: 'wrap',
+        justifyContent: 'center'
+    },
+    textField: {
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(2),
+        marginTop: theme.spacing(0)
+    },
+    label: {
+        marginTop: theme.spacing(2)
+    },
+    menu: {
+        width: 200,
+    },
+    margin: {
+        margin: theme.spacing(1),
+    },
+    button: {
+        margin: theme.spacing(1),
+    },
+}));
+
 const SettingsComponent = (props) => {
-
-    const useStyles = makeStyles(theme => ({
-        container: {
-            flexWrap: 'wrap',
-            justifyContent: 'center'
-        },
-        textField: {
-            marginLeft: theme.spacing(1),
-            marginRight: theme.spacing(2),
-            marginTop: theme.spacing(0)
-        },
-        label: {
-            marginTop: theme.spacing(2)
-        },
-        menu: {
-            width: 200,
-        },
-        margin: {
-            margin: theme.spacing(1),
-        },
-        button: {
-            margin: theme.spacing(1),
-        },
-    }));
-
 
     const classes = useStyles();
 
@@ -121,25 +122,26 @@ const SettingsComponent = (props) => {
 
                     <Grid item xs={6}>
                         <FormControl fullWidth className={classes.margin} component="fieldset">
+
                             <FormLabel component="legend">Chain</FormLabel>
-                            <RadioGroup aria-label="position" name="position" value={props.network} onChange={props.handleChange} row>
+                            <RadioGroup aria-label="position" name="network" value={props.network} onChange={props.handleChange} row>
 
                                 <FormControlLabel
-                                    value="start"
+                                    value="Mainnet"
                                     control={<Radio color="primary" />}
                                     label="Mainnet"
                                     labelPlacement="start"
                                 />
 
                                 <FormControlLabel
-                                    value="start"
+                                    value="Kovan"
                                     control={<Radio color="primary" />}
                                     label="Kovan"
                                     labelPlacement="start"
                                 />
 
                                 <FormControlLabel
-                                    value="start"
+                                    value="Goerli"
                                     control={<Radio color="primary" />}
                                     label="Goerli"
                                     labelPlacement="start"
@@ -164,20 +166,19 @@ const SettingsComponent = (props) => {
 
                     <Grid item xs={6}>
                         <FormControl fullWidth className={classes.margin} variant="outlined">
-                            <InputLabel htmlFor="outlined-age-native-simple">Logging Level</InputLabel>
+                            <InputLabel htmlFor="logslevel">Logging Level</InputLabel>
                             <Select
                                 native
                                 value={props.logslevel}
                                 onChange={props.handleChange}
                                 inputProps={{
-                                    name: 'age',
-                                    id: 'outlined-age-native-simple',
+                                    name: 'logslevel',
+                                    id: 'logslevel',
                                 }}
                             >
-                                <option value="" />
-                                <option value={10}>Info</option>
-                                <option value={20}>Debug</option>
-                                <option value={30}>Error</option>
+                                <option value="Info">Info</option>
+                                <option value="Debug">Debug</option>
+                                <option value="Error">Error</option>
                             </Select>
                         </FormControl>
                     </Grid>

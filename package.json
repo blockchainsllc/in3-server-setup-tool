@@ -6,14 +6,15 @@
     "@material-ui/core": "^4.4.3",
     "@material-ui/icons": "^4.4.3",
     "ethereumjs-wallet": "^0.6.3",
+    "in3": "^1.1.48",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-scripts": "3.1.2",
     "typeface-roboto": "0.0.75"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build"
+    "start": "cp ./node_modules/in3/js/src/client/defaultConfig.json ./src/ ; react-scripts start",
+    "build": "cp ./node_modules/in3/js/src/client/defaultConfig.json ./src/ ; react-scripts build"
   },
   "eslintConfig": {
     "extends": "react-app"
