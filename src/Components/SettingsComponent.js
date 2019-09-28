@@ -341,7 +341,7 @@ const SettingsComponent = (props) => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Button variant="contained" color="primary" className={classes.button}>Register IN3 Server</Button>
+                        <Button variant="contained" color="primary" className={classes.button} onClick={props.registerin3}>Register IN3 Server</Button>
                     </Grid>
 
 

@@ -11,7 +11,9 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-scripts": "3.1.2",
-    "typeface-roboto": "0.0.75"
+    "typeface-roboto": "0.0.75",
+    "web3": "^1.2.1",
+    "web3-utils": "^1.2.1"
   },
   "scripts": {
     "start": "cp ./node_modules/in3/js/src/client/defaultConfig.json ./src/ ; react-scripts start",

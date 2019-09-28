@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import SettingsComponent from '../Components/SettingsComponent';
 import ethWallet from 'ethereumjs-wallet';
-import DialogComponent from '../Components/DialogComponent'
-import defaultConfig from '../defaultConfig'
-import path from 'path'
+import DialogComponent from '../Components/DialogComponent';
+import defaultConfig from '../defaultConfig';
+import NodeRegistry from '../Contract/NodeRegistry';
+import path from 'path';
+import Web3 from 'web3';
+import soliditySha3 from "web3-utils";
 
 export default class SettingsContainer extends Component {
     constructor(props) {
@@ -40,7 +43,7 @@ export default class SettingsContainer extends Component {
         const { id, value } = e.target;
         let newState = Object.assign({}, this.props);
 
-        if (e.target.name=='network') {
+        if (e.target.name == 'network') {
             newState["noderegistry"] = defaultConfig.servers[this.NW[value]].contract;
         }
         if (e.target.type == 'radio') {
@@ -72,7 +75,7 @@ export default class SettingsContainer extends Component {
 
         if (this.state.keystorepath && this.state.keyphrase) {
             dockerConf +=
-            "            - --privateKey=/secure/" + (this.state.keystorepath.replace(/^.*[\\\/]/, '')) + "                       # internal path to the key\n\
+                "            - --privateKey=/secure/" + (this.state.keystorepath.replace(/^.*[\\\/]/, '')) + "                       # internal path to the key\n\
             - --privateKeyPassphrase="+ (this.state.keyphrase) + "                          # passphrase to unlock the key\n";
         }
         else {
@@ -115,6 +118,86 @@ export default class SettingsContainer extends Component {
 
     }
 
+    registerin3 = (e) => {
+        // Modern DApp Browsers
+        if (window.ethereum) {
+            var web3 = new Web3(window.ethereum);
+            try {
+                window.ethereum.enable().then(function () {
+                    // User has allowed account access to DApp...
+                    let nodeRegistry = "0xb43D758e8f2158Ff807C9d53E779ab967bEfb9b1";
+                    let abi = NodeRegistry.abi;
+                    let myContract = new web3.eth.Contract(abi, nodeRegistry);
+
+                    //incoming params
+                    const proof = true;
+                    const multiChain = false;
+                    const _url = "http://127.0.0.1:8501";
+                    const _timeout = 10;
+                    const _weight = 1;
+                    const _props = web3.utils.toHex((proof ? 1 : 0) + (multiChain ? 2 : 0))
+                    const deposit = web3.utils.toHex(Web3.utils.toWei('100', 'ether')); //100 ether
+
+                    const encoded = web3.utils.soliditySha3(
+                        _url,
+                        parseInt(_props, 16),
+                        _timeout,
+                        _weight,
+                        window.web3.currentProvider.selectedAddress
+                    );
+
+                    var h = web3.utils.sha3(encoded);
+                    web3.eth.sign(h, window.web3.currentProvider.selectedAddress).then(function (sigi) {
+                        alert(sigi);
+                        
+                        var sig = sigi.slice(2);
+                        var _r = `0x${sig.slice(0, 64)}`;
+                        var _s = `0x${sig.slice(64, 128)}`;
+                        var _v = web3.utils.toDecimal(sig.slice(128, 130)) + 27;
+
+                        let response = myContract.methods
+                            .registerNodeFor(
+                                _url,
+                                _props,
+                                _timeout,
+                                window.web3.currentProvider.selectedAddress,
+                                _weight,
+                                _v,
+                                _r,
+                                _s
+                            )
+                            .send({
+                                from: window.web3.currentProvider.selectedAddress,
+                                to: nodeRegistry,
+                                value: deposit
+                                //gasPrice: '20000000000'
+                            });
+                            
+                            response.catch(function (response) {
+                                alert("error : ", response);
+                            });
+                            
+                            response.then(function (response) {
+                                alert("response: ", response);
+                            });
+                        
+                    });
+                });
+            } catch (e) {
+                // User has denied account access to DApp...
+                alert('You Denied MetaMask Access!');
+            }
+        }
+        // Legacy DApp Browsers
+        else if (window.web3) {
+            var web3 = new Web3(window.web3.currentProvider);
+        }
+        // Non-DApp Browsers
+        else {
+            alert('You have to install MetaMask !');
+        }
+    }
+
     handleClose = () => {
         let newState = Object.assign({}, this.props);
         newState['outputData'] = undefined;
@@ -146,6 +229,8 @@ export default class SettingsContainer extends Component {
                     deposit={this.state.deposit}
                     in3timeout={this.state.in3timeout}
                     ethnodeurl={this.state.ethnodeurl}
+
+                    registerin3={this.registerin3}
                 >
                 </SettingsComponent>
 
