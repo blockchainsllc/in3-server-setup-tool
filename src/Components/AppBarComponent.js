@@ -15,18 +15,18 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function DenseAppBar() {
+export default function AppBarComponent() {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <AppBar position="static"  style={{ background: '#2E3B55' }}>
+      <AppBar position="static" style={{ background: '#2E3B55' }}>
         <Toolbar variant="dense">
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" color="inherit">
-            Blockchains 
+            Blockchains
           </Typography>
         </Toolbar>
       </AppBar>

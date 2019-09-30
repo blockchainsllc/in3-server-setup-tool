@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
 
-export default class InfoCard extends React.Component {
+export default class InfoCardComponent extends React.Component {
 
     constructor(props) {
         super(props);
@@ -27,15 +27,15 @@ export default class InfoCard extends React.Component {
                             Incubed Server Setup Wizard
           </Typography>
                         <Typography variant="body2" color="textSecondary" component="p">
-                        The Minimal Verification Client. You can use following wizad for generating incube server settings JSON file or command line.
+                            The Minimal Verification Client. You can use following wizad for generating incube server settings JSON file or command line.
           </Typography>
                     </CardContent>
                 </CardActionArea>
-                <CardActions style={{justifyContent: 'center'}}>
-                    <Button size="small" color="primary" onClick={ () => this.handlePageChange('https://github.com/slockit/in3')}>
+                <CardActions style={{ justifyContent: 'center' }}>
+                    <Button size="small" color="primary" onClick={() => this.handlePageChange('https://github.com/slockit/in3')}>
                         Source Code
         </Button>
-                    <Button size="small" color="primary" onClick={ () => this.handlePageChange('https://in3.readthedocs.io/en/latest/')}>
+                    <Button size="small" color="primary" onClick={() => this.handlePageChange('https://in3.readthedocs.io/en/latest/')}>
                         Documentation
         </Button>
                 </CardActions>

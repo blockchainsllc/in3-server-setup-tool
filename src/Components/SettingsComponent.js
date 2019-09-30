@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import Typography from "@material-ui/core/Typography";
-import PaperComp from './PaperComp'
+import PaperComponent from './PaperComponent'
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -51,7 +51,7 @@ const SettingsComponent = (props) => {
     return (
 
         <form className={classes.container} noValidate autoComplete="off">
-            <PaperComp>
+            <PaperComponent>
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
                         <Typography variant="body2" color="textSecondary" component="p">Meta data Settings</Typography>
@@ -108,11 +108,11 @@ const SettingsComponent = (props) => {
                     </Grid>
                 </Grid>
 
-            </PaperComp>
+            </PaperComponent>
 
             <br /> <br />
 
-            <PaperComp>
+            <PaperComponent>
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
                         <Typography variant="body2" color="textSecondary" component="p">Server Settings</Typography>
@@ -252,11 +252,11 @@ const SettingsComponent = (props) => {
                     <Button variant="contained" color="primary" className={classes.button} onClick={props.genConfig}>Generate Config</Button>
                 </Grid>
 
-            </PaperComp>
+            </PaperComponent>
 
             <br /> <br />
 
-            <PaperComp>
+            <PaperComponent>
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
                         <Typography variant="body2" color="textSecondary" component="p">Register IN3 Server</Typography>
@@ -346,7 +346,7 @@ const SettingsComponent = (props) => {
 
 
                 </Grid>
-            </PaperComp>
+            </PaperComponent>
 
             <br />
 

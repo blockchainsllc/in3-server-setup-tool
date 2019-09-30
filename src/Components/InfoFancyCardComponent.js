@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function InfoFancyCard() {
+export default function InfoFancyCardComponent() {
   const classes = useStyles();
   const theme = useTheme();
 

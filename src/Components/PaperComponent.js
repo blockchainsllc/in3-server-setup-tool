@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 
 
-export default class PaperComp extends React.Component {
+export default class PaperComponent extends React.Component {
     constructor(props) {
         super(props);
     }
