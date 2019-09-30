@@ -125,31 +125,31 @@ export default class SettingsContainer extends Component {
             try {
                 window.ethereum.enable().then(function () {
                     // User has allowed account access to DApp...
-                    let nodeRegistry = "0xb43D758e8f2158Ff807C9d53E779ab967bEfb9b1";
+                    let nodeRegistry = "0x569D163AbCdC19E53387bd5c31f0083CCe2C5f48";
                     let abi = NodeRegistry.abi;
                     let myContract = new web3.eth.Contract(abi, nodeRegistry);
 
                     //incoming params
                     const proof = true;
                     const multiChain = false;
-                    const _url = "http://127.0.0.1:8501";
-                    const _timeout = 10;
-                    const _weight = 1;
-                    const _props = web3.utils.toHex((proof ? 1 : 0) + (multiChain ? 2 : 0))
-                    const deposit = web3.utils.toHex(Web3.utils.toWei('100', 'ether')); //100 ether
+                    const _url = "http://127.0.0.1:8503";
+                    const _timeout = web3.utils.toHex(3600);
+                    const _weight = web3.utils.toHex(1);
+                    const _props = web3.utils.toHex((proof ? 1 : 0) + (multiChain ? 2 : 0)) // or 32
+                    const deposit = web3.utils.toHex(Web3.utils.toWei('10', 'ether')); //100 ether
 
                     const encoded = web3.utils.soliditySha3(
                         _url,
                         parseInt(_props, 16),
-                        _timeout,
-                        _weight,
+                        parseInt(_timeout, 16),
+                        parseInt(_weight, 16),
                         window.web3.currentProvider.selectedAddress
                     );
 
                     var h = web3.utils.sha3(encoded);
                     web3.eth.sign(h, window.web3.currentProvider.selectedAddress).then(function (sigi) {
-                        alert(sigi);
                         
+
                         var sig = sigi.slice(2);
                         var _r = `0x${sig.slice(0, 64)}`;
                         var _s = `0x${sig.slice(64, 128)}`;
@@ -157,30 +157,31 @@ export default class SettingsContainer extends Component {
 
                         let response = myContract.methods
                             .registerNodeFor(
+                            //.registerNode(
                                 _url,
                                 _props,
                                 _timeout,
-                                window.web3.currentProvider.selectedAddress,
+                                window.web3.currentProvider.selectedAddress, //not req in registerNode
                                 _weight,
-                                _v,
-                                _r,
-                                _s
+                                _v, //not req in registerNode
+                                _r, //not req in registerNode
+                                _s //not req in registerNode
                             )
                             .send({
                                 from: window.web3.currentProvider.selectedAddress,
                                 to: nodeRegistry,
-                                value: deposit
-                                //gasPrice: '20000000000'
+                                value: deposit,
+                                gas: '300000'
                             });
-                            
-                            response.catch(function (response) {
-                                alert("error : ", response);
-                            });
-                            
-                            response.then(function (response) {
-                                alert("response: ", response);
-                            });
-                        
+
+                        response.catch(function (response) {
+                            alert("error : ", response);
+                        });
+
+                        response.then(function (response) {
+                            alert("response: ", response);
+                        });
+
                     });
                 });
             } catch (e) {

@@ -92,9 +92,7 @@ const DialogComponent = (props) => {
                     />
 
                     <Typography gutterBottom>
-                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-                        scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-                        auctor fringilla.
+                        For more details visit: 
                         https://in3.readthedocs.io/en/develop/api-node.html#command-line-arguments
           </Typography>
                 </DialogContent>
