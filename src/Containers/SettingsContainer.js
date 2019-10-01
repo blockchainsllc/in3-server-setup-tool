@@ -8,7 +8,7 @@ import path from 'path';
 import Web3 from 'web3';
 import soliditySha3 from "web3-utils";
 //import EthUtil from "ethereumjs-util";
-var ethUtils = require('ethereumjs-util');;
+var ethUtils = require('ethereumjs-util');
 
 
 export default class SettingsContainer extends Component {
@@ -141,6 +141,7 @@ export default class SettingsContainer extends Component {
         //console.log("privateKey: " + wallet.getPrivateKeyString());
         //console.log("address: " + wallet.getAddressString());
     }
+    
 
     sendRegTransaction = (web3, window) => {
 
