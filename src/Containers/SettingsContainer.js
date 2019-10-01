@@ -7,6 +7,9 @@ import NodeRegistry from '../Contract/NodeRegistry';
 import path from 'path';
 import Web3 from 'web3';
 import soliditySha3 from "web3-utils";
+//import EthUtil from "ethereumjs-util";
+var ethUtils = require('ethereumjs-util');;
+
 
 export default class SettingsContainer extends Component {
     constructor(props) {
@@ -20,13 +23,17 @@ export default class SettingsContainer extends Component {
             noderegistry: defaultConfig.servers['0x1'].contract,
             logslevel: 'Info',
             blockheight: '6',
+
             privatekey: '',
+            address: '',
+            encprivatekey: '',
             keystorepath: '',
-            keyphrase: '',
+            keyphrase1: '',
+            keyphrase2: '',
 
             capabilities: '',
             deposit: '',
-            in3timeout: '',
+            in3timeout: '3600',
             ethnodeurl: '',
             outputData: ''
         }
@@ -37,7 +44,6 @@ export default class SettingsContainer extends Component {
             "Goerli": "0x5"
         };
     }
-
 
     handleChange = (e) => {
         const { id, value } = e.target;
@@ -111,78 +117,95 @@ export default class SettingsContainer extends Component {
     }
 
     generatePrivateKey = (e) => {
-        const wallet = ethWallet.generate();
+
+        if (this.state.keyphrase1 != this.state.keyphrase2) {
+            alert("Key Pass Phrase doesnt match");
+            this.setState({ keyphrase1: '' });
+            this.setState({ keyphrase2: '' });
+        }
+        else if (this.state.keyphrase1 == '') {
+            alert("Key Phrase cannot be empty");
+        }
+        else {
+            const wallet = ethWallet.generate();
+            //var key = Buffer.from(wallet.getPrivateKeyString(), 'hex');
+            // var wallet = Wallet.fromPrivateKey(key)
+
+            var str = wallet.toV3String(this.state.keyphrase1);
+
+            this.setState({ encprivatekey: str });
+            this.setState({ privatekey: wallet.getPrivateKeyString() });
+            this.setState({ address: wallet.getAddressString() });
+        }
+
         //console.log("privateKey: " + wallet.getPrivateKeyString());
         //console.log("address: " + wallet.getAddressString());
-        this.setState({ privatekey: wallet.getPrivateKeyString() });
+    }
+
+    sendRegTransaction = (web3, window) => {
+
+        let nodeRegistry = "0x7DA81c2d83B0e07DB4AEe9dA0d5DCe8d16b4d245";
+        let abi = NodeRegistry.abi;
+        let myContract = new web3.eth.Contract(abi, nodeRegistry);
+
+        const proof = true;
+        const multiChain = false;
+        const _url = "http://127.0.0.1:8503";
+        const _timeout = web3.utils.toHex(3600);
+        const _weight = web3.utils.toHex(1);
+        const _props = web3.utils.toHex((proof ? 1 : 0) + (multiChain ? 2 : 0)) // or 32
+        const deposit = web3.utils.toHex(Web3.utils.toWei('5', 'ether'));
+
+        const encoded = web3.utils.soliditySha3(
+            _url,
+            parseInt(_props, 16),
+            parseInt(_timeout, 16),
+            parseInt(_weight, 16),
+            this.state.address
+        );
+
+        const pk = this.state.privatekey;
+
+        const sig = ethUtils.ecsign(
+            ethUtils.toBuffer(encoded),
+            ethUtils.toBuffer(pk));
+
+        let response = myContract.methods
+            .registerNodeFor(
+                _url,
+                _props,
+                _timeout,
+                this.state.address,
+                _weight,
+                sig.v,
+                sig.r,
+                sig.s
+            )
+            .send({
+                from: window.web3.currentProvider.selectedAddress,
+                to: nodeRegistry,
+                value: deposit
+                , gas: '300000'
+            });
+
+        response.catch(function (response) {
+            alert("error : ", response);
+        });
+
+        response.then(function (response) {
+            alert("response: ", response);
+        });
 
     }
 
-    registerin3 = (e) => {
+    registerin3 = () => {
         // Modern DApp Browsers
         if (window.ethereum) {
             var web3 = new Web3(window.ethereum);
             try {
-                window.ethereum.enable().then(function () {
-                    // User has allowed account access to DApp...
-                    let nodeRegistry = "0x569D163AbCdC19E53387bd5c31f0083CCe2C5f48";
-                    let abi = NodeRegistry.abi;
-                    let myContract = new web3.eth.Contract(abi, nodeRegistry);
+                window.ethereum.enable().then(() => {
 
-                    //incoming params
-                    const proof = true;
-                    const multiChain = false;
-                    const _url = "http://127.0.0.1:8503";
-                    const _timeout = web3.utils.toHex(3600);
-                    const _weight = web3.utils.toHex(1);
-                    const _props = web3.utils.toHex((proof ? 1 : 0) + (multiChain ? 2 : 0)) // or 32
-                    const deposit = web3.utils.toHex(Web3.utils.toWei('10', 'ether')); //100 ether
-
-                    const encoded = web3.utils.soliditySha3(
-                        _url,
-                        parseInt(_props, 16),
-                        parseInt(_timeout, 16),
-                        parseInt(_weight, 16),
-                        window.web3.currentProvider.selectedAddress
-                    );
-
-                    var h = web3.utils.sha3(encoded);
-                    web3.eth.sign(h, window.web3.currentProvider.selectedAddress).then(function (sigi) {
-                        
-
-                        var sig = sigi.slice(2);
-                        var _r = `0x${sig.slice(0, 64)}`;
-                        var _s = `0x${sig.slice(64, 128)}`;
-                        var _v = web3.utils.toDecimal(sig.slice(128, 130)) + 27;
-
-                        let response = myContract.methods
-                            .registerNodeFor(
-                            //.registerNode(
-                                _url,
-                                _props,
-                                _timeout,
-                                window.web3.currentProvider.selectedAddress, //not req in registerNode
-                                _weight,
-                                _v, //not req in registerNode
-                                _r, //not req in registerNode
-                                _s //not req in registerNode
-                            )
-                            .send({
-                                from: window.web3.currentProvider.selectedAddress,
-                                to: nodeRegistry,
-                                value: deposit,
-                                gas: '300000'
-                            });
-
-                        response.catch(function (response) {
-                            alert("error : ", response);
-                        });
-
-                        response.then(function (response) {
-                            alert("response: ", response);
-                        });
-
-                    });
+                    this.sendRegTransaction(web3, window);
                 });
             } catch (e) {
                 // User has denied account access to DApp...
@@ -192,11 +215,13 @@ export default class SettingsContainer extends Component {
         // Legacy DApp Browsers
         else if (window.web3) {
             var web3 = new Web3(window.web3.currentProvider);
+            this.sendRegTransaction(web3, window);
         }
         // Non-DApp Browsers
         else {
             alert('You have to install MetaMask !');
         }
+
     }
 
     handleClose = () => {
@@ -205,6 +230,24 @@ export default class SettingsContainer extends Component {
         this.setState(newState);
     };
 
+    downloadEncPKFile = () => {
+
+        if (this.state.encprivatekey == '') {
+            alert("First generate private key.");
+        }
+        else {
+            const element = document.createElement("a");
+            const json = document.getElementById('encprivatekey').value;
+            const file = new Blob([json], { type: 'text/plain' });
+            element.href = URL.createObjectURL(file);
+
+            const jsonObj = JSON.parse(json);
+
+            element.download = jsonObj.address + ".json";
+            document.body.appendChild(element); // Required for this to work in FireFox
+            element.click();
+        }
+    }
 
     render() {
         return (
@@ -222,9 +265,10 @@ export default class SettingsContainer extends Component {
                     noderegistry={this.state.noderegistry}
                     logslevel={this.state.logslevel}
                     blockheight={this.state.blockheight}
-                    privatekey={this.state.privatekey}
+                    encprivatekey={this.state.encprivatekey}
                     keystorepath={this.state.keystorepath}
-                    keyphrase={this.state.keyphrase}
+                    keyphrase1={this.state.keyphrase1}
+                    keyphrase2={this.state.keyphrase2}
 
                     capabilities={this.state.capabilities}
                     deposit={this.state.deposit}
@@ -232,6 +276,8 @@ export default class SettingsContainer extends Component {
                     ethnodeurl={this.state.ethnodeurl}
 
                     registerin3={this.registerin3}
+
+                    downloadEncPKFile={this.downloadEncPKFile}
                 >
                 </SettingsComponent>
 

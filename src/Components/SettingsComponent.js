@@ -1,7 +1,5 @@
 import React from 'react';
-import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import Typography from "@material-ui/core/Typography";
 import PaperComponent from './PaperComponent'
@@ -11,14 +9,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from '@material-ui/core/Select';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button';
-import { isContinueStatement } from '@babel/types';
-import { inherits } from 'util';
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -43,6 +38,9 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(1),
     },
 }));
+
+
+
 
 const SettingsComponent = (props) => {
 
@@ -196,16 +194,33 @@ const SettingsComponent = (props) => {
                         </FormControl>
                     </Grid>
 
-                    <Grid item xs={10}>
+                    <Grid item xs={6}>
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
-                                id="privatekey"
-                                label="Private Key"
+                                id="keyphrase1"
+                                label="Private Key Pass Phrase"
                                 className={classes.textField}
-                                value={props.privatekey}
+                                value={props.keyphrase1}
                                 onChange={props.handleChange}
                                 margin="normal"
                                 variant="outlined"
+                                type="password"
+                            />
+                        </FormControl>
+
+                    </Grid>
+
+                    <Grid item xs={4}>
+                        <FormControl fullWidth className={classes.margin}>
+                            <TextField
+                                id="keyphrase2"
+                                label="Private Key Pass Phrase ( again )"
+                                className={classes.textField}
+                                value={props.keyphrase2}
+                                onChange={props.handleChange}
+                                margin="normal"
+                                variant="outlined"
+                                type="password"
                             />
                         </FormControl>
                     </Grid>
@@ -214,38 +229,26 @@ const SettingsComponent = (props) => {
                         <Button variant="contained" color="primary" className={classes.button} onClick={props.genPrivateKey} >Generate Private Key</Button>
                     </Grid>
 
-                    <Grid item xs={12}>
-                        <Typography variant="body2" color="textSecondary" component="p">Either Generate Private key or specify keystore path</Typography>
-                    </Grid>
-
-                    <Grid item xs={6}>
+                    <Grid item xs={10}>
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
-                                id="keystorepath"
-                                label="Key Store File Path"
+                                id="encprivatekey"
+                                label="Encrypted Private Key"
                                 className={classes.textField}
-                                value={props.keystorepath}
-                                onChange={props.handleChange}
-                                margin="normal"
-                                variant="outlined"
-                            />
-                        </FormControl>
-
-                    </Grid>
-
-                    <Grid item xs={6}>
-                        <FormControl fullWidth className={classes.margin}>
-                            <TextField
-                                id="keyphrase"
-                                label="Private Key Phrase to Unlock Keystore"
-                                className={classes.textField}
-                                value={props.keyphrase}
+                                value={props.encprivatekey}
                                 onChange={props.handleChange}
                                 margin="normal"
                                 variant="outlined"
                             />
                         </FormControl>
                     </Grid>
+
+                    <Grid item xs={2}>
+                        <Button variant="contained" color="primary" className={classes.button} onClick={props.downloadEncPKFile} >Export Encrypted Private Key</Button>
+                    </Grid>
+
+
+
                 </Grid>
 
                 <Grid item xs={12}>
@@ -263,39 +266,56 @@ const SettingsComponent = (props) => {
                     </Grid>
 
                     <Grid item xs={6}>
-                        <FormControl fullWidth className={classes.margin} component="fieldset">
-                            <FormLabel component="legend">Node Capabilities</FormLabel>
-                            <RadioGroup aria-label="position" name="capabilities" value={props.capabilities} onChange={props.handleChange} row>
+                        <FormControl component="fieldset">
+                            <FormLabel component="legend">Assign responsibility</FormLabel>
+                            <FormGroup row>
 
                                 <FormControlLabel
-                                    value="Proof"
-                                    control={<Radio color="primary" />}
+                                    control={
+                                        <Switch
+                                            checked={props.checkedB}
+                                            //onChange={handleChange('checkedB')}
+                                            value="checkedB"
+                                            color="primary"
+                                        />
+                                    }
                                     label="Proof"
-                                    labelPlacement="start"
                                 />
 
                                 <FormControlLabel
-                                    value="Multi chain"
-                                    control={<Radio color="primary" />}
-                                    label="Multi chain"
-                                    labelPlacement="start"
+                                    control={
+                                        <Switch
+                                            checked={props.checkedB}
+                                            value="checkedB"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Multichain"
                                 />
 
                                 <FormControlLabel
-                                    value="Archive"
-                                    control={<Radio color="primary" />}
+                                    control={
+                                        <Switch
+                                            checked={props.checkedB}
+                                            value="checkedB"
+                                            color="primary"
+                                        />
+                                    }
                                     label="Archive"
-                                    labelPlacement="start"
                                 />
 
                                 <FormControlLabel
-                                    value="Http"
-                                    control={<Radio color="primary" />}
+                                    control={
+                                        <Switch
+                                            checked={props.checkedB}
+                                            value="checkedB"
+                                            color="primary"
+                                        />
+                                    }
                                     label="Http"
-                                    labelPlacement="start"
                                 />
 
-                            </RadioGroup>
+                            </FormGroup>
                         </FormControl>
                     </Grid>
 
@@ -317,7 +337,7 @@ const SettingsComponent = (props) => {
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
                                 id="in3timeout"
-                                label="IN3 Timeout (ms)"
+                                label="IN3 Timeout (seconds)"
                                 className={classes.textField}
                                 value={props.in3timeout}
                                 onChange={props.handleChange}
