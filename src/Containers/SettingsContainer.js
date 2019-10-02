@@ -31,7 +31,11 @@ export default class SettingsContainer extends Component {
             keyphrase1: 'a',
             keyphrase2: 'a',
 
-            capabilities: '',
+            capproof: false,
+            capmultichain: false,
+            caphttp: false,
+            caparchive: false,
+
             deposit: '',
             in3timeout: '3600',
             in3nodeurl: '',
@@ -54,6 +58,9 @@ export default class SettingsContainer extends Component {
         }
         if (e.target.type == 'radio') {
             newState[e.target.name] = value;
+        }
+        else if (e.target.type == 'checkbox'){
+            newState[id] = e.target.checked;
         }
         else
             newState[id] = value;
@@ -117,7 +124,6 @@ export default class SettingsContainer extends Component {
     }
 
     generatePrivateKey = (e) => {
-
         if (this.state.keyphrase1 != this.state.keyphrase2) {
             alert("Key Pass Phrase doesnt match");
             this.setState({ keyphrase1: '' });
@@ -181,7 +187,9 @@ export default class SettingsContainer extends Component {
 
         const _timeout = web3.utils.toHex(this.state.in3timeout);
         const _weight = web3.utils.toHex(1);
-        const _props = web3.utils.toHex((proof ? 1 : 0) + (multiChain ? 2 : 0)) // or 32*/
+        const _props = web3.utils.toHex((this.state.capproof ? 1 : 0) + (this.state.capmultichain ? 2 : 0)
+        + (this.state.caphttp ? 8 : 0)+ (this.state.caparchive ? 4 : 0))
+
         const deposit = '0x1';//web3.utils.toHex(Web3.utils.toWei('1', 'wei'));
 
         const PK = this.state.privatekey;
@@ -281,7 +289,11 @@ export default class SettingsContainer extends Component {
                     keyphrase1={this.state.keyphrase1}
                     keyphrase2={this.state.keyphrase2}
 
-                    capabilities={this.state.capabilities}
+                    capproof={this.state.capproof}
+                    capmultichain={this.state.capmultichain}
+                    caphttp={this.state.caphttp}
+                    caparchive={this.state.caparchive}
+
                     deposit={this.state.deposit}
                     in3timeout={this.state.in3timeout}
                     in3nodeurl={this.state.in3nodeurl}

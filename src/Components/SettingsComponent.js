@@ -273,9 +273,10 @@ const SettingsComponent = (props) => {
                                 <FormControlLabel
                                     control={
                                         <Switch
-                                            checked={props.checkedB}
-                                            //onChange={handleChange('checkedB')}
-                                            value="checkedB"
+                                        id="capproof"
+                                            checked={props.capproof}
+                                            onChange={props.handleChange}
+                                            value="1"
                                             color="primary"
                                         />
                                     }
@@ -285,8 +286,10 @@ const SettingsComponent = (props) => {
                                 <FormControlLabel
                                     control={
                                         <Switch
-                                            checked={props.checkedB}
-                                            value="checkedB"
+                                        id="capmultichain"
+                                            checked={props.capmultichain}
+                                            onChange={props.handleChange}
+                                            value="2"
                                             color="primary"
                                         />
                                     }
@@ -296,8 +299,10 @@ const SettingsComponent = (props) => {
                                 <FormControlLabel
                                     control={
                                         <Switch
-                                            checked={props.checkedB}
-                                            value="checkedB"
+                                        id="caparchive"
+                                            checked={props.caparchive}
+                                            onChange={props.handleChange}
+                                            value="4"
                                             color="primary"
                                         />
                                     }
@@ -307,8 +312,10 @@ const SettingsComponent = (props) => {
                                 <FormControlLabel
                                     control={
                                         <Switch
-                                            checked={props.checkedB}
-                                            value="checkedB"
+                                            id="caphttp"
+                                            checked={props.caphttp}
+                                            onChange={props.handleChange}
+                                            value="8"
                                             color="primary"
                                         />
                                     }
