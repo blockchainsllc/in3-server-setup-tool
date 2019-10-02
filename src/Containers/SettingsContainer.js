@@ -6,9 +6,9 @@ import defaultConfig from '../defaultConfig';
 import NodeRegistry from '../Contract/NodeRegistry';
 import path from 'path';
 import Web3 from 'web3';
-import soliditySha3 from "web3-utils";
-//import EthUtil from "ethereumjs-util";
-var ethUtils = require('ethereumjs-util');
+
+const in3Common = require('in3-common');
+const ethUtil = require('ethereumjs-util');
 
 
 export default class SettingsContainer extends Component {
@@ -28,13 +28,13 @@ export default class SettingsContainer extends Component {
             address: '',
             encprivatekey: '',
             keystorepath: '',
-            keyphrase1: '',
-            keyphrase2: '',
+            keyphrase1: 'a',
+            keyphrase2: 'a',
 
             capabilities: '',
             deposit: '',
             in3timeout: '3600',
-            ethnodeurl: '',
+            in3nodeurl: '',
             outputData: ''
         }
 
@@ -137,66 +137,76 @@ export default class SettingsContainer extends Component {
             this.setState({ privatekey: wallet.getPrivateKeyString() });
             this.setState({ address: wallet.getAddressString() });
         }
-
-        //console.log("privateKey: " + wallet.getPrivateKeyString());
-        //console.log("address: " + wallet.getAddressString());
     }
-    
+
+    signForRegister = (url, props, timeout, weight, owner, pk) => {
+
+        const msgHash = ethUtil.keccak(
+            Buffer.concat([
+                in3Common.serialize.bytes(url),
+                in3Common.serialize.uint64(props),
+                in3Common.serialize.uint64(timeout),
+                in3Common.serialize.uint64(weight),
+                in3Common.serialize.address(owner)
+            ])
+        )
+        const msgHash2 = ethUtil.keccak(in3Common.util.toHex("\x19Ethereum Signed Message:\n32") + in3Common.util.toHex(msgHash).substr(2))
+        const s = ethUtil.ecsign((msgHash2), in3Common.serialize.bytes32(pk))
+
+        return {
+            ...s,
+            address: in3Common.util.getAddress(pk),
+            msgHash: in3Common.util.toHex(msgHash2, 32),
+            signature: in3Common.util.toHex(s.r) + in3Common.util.toHex(s.s).substr(2) + in3Common.util.toHex(s.v).substr(2),
+            r: in3Common.util.toHex(s.r),
+            s: in3Common.util.toHex(s.s),
+            v: s.v
+        }
+    }
 
     sendRegTransaction = (web3, window) => {
 
-        let nodeRegistry = "0x7DA81c2d83B0e07DB4AEe9dA0d5DCe8d16b4d245";
+        let nodeRegistry = "0x871C190Aa6f16B809c982ffD4679Bd6898754748";
         let abi = NodeRegistry.abi;
         let myContract = new web3.eth.Contract(abi, nodeRegistry);
 
         const proof = true;
         const multiChain = false;
-        const _url = "http://127.0.0.1:8503";
-        const _timeout = web3.utils.toHex(3600);
+
+        const _url = this.state.in3nodeurl;
+        if (_url === "") {
+            alert("IN3 node URL cannot be empty");
+            return;
+        }
+
+        const _timeout = web3.utils.toHex(this.state.in3timeout);
         const _weight = web3.utils.toHex(1);
-        const _props = web3.utils.toHex((proof ? 1 : 0) + (multiChain ? 2 : 0)) // or 32
-        const deposit = web3.utils.toHex(Web3.utils.toWei('5', 'ether'));
+        const _props = web3.utils.toHex((proof ? 1 : 0) + (multiChain ? 2 : 0)) // or 32*/
+        const deposit = '0x1';//web3.utils.toHex(Web3.utils.toWei('1', 'wei'));
 
-        const encoded = web3.utils.soliditySha3(
-            _url,
-            parseInt(_props, 16),
-            parseInt(_timeout, 16),
-            parseInt(_weight, 16),
-            this.state.address
-        );
+        const PK = this.state.privatekey;
+        const node_signerAcc = web3.eth.accounts.privateKeyToAccount(PK);
 
-        const pk = this.state.privatekey;
+        const signature = this.signForRegister(_url, _props, _timeout, _weight, window.web3.currentProvider.selectedAddress, PK);
 
-        const sig = ethUtils.ecsign(
-            ethUtils.toBuffer(encoded),
-            ethUtils.toBuffer(pk));
-
-        let response = myContract.methods
+        myContract.methods
             .registerNodeFor(
-                _url,
-                _props,
-                _timeout,
-                this.state.address,
-                _weight,
-                sig.v,
-                sig.r,
-                sig.s
-            )
+                _url, _props, _timeout, this.state.address, _weight, signature.v, signature.r, signature.s)
             .send({
                 from: window.web3.currentProvider.selectedAddress,
                 to: nodeRegistry,
                 value: deposit
-                , gas: '300000'
-            });
-
-        response.catch(function (response) {
-            alert("error : ", response);
-        });
-
-        response.then(function (response) {
-            alert("response: ", response);
-        });
-
+                , gas: '30000'
+            }).on('transactionHash', function (hash) {
+                alert("Tx Hash" + hash);
+            })
+            .on('confirmation', function (confirmationNumber, receipt) {
+                alert(confirmationNumber + " " + receipt)
+            })
+            .on('receipt', function (receipt) {
+                alert(receipt);
+            })
+            .on('error', function (err) { alert(err) });
     }
 
     registerin3 = () => {
@@ -274,7 +284,7 @@ export default class SettingsContainer extends Component {
                     capabilities={this.state.capabilities}
                     deposit={this.state.deposit}
                     in3timeout={this.state.in3timeout}
-                    ethnodeurl={this.state.ethnodeurl}
+                    in3nodeurl={this.state.in3nodeurl}
 
                     registerin3={this.registerin3}
 

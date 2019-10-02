@@ -350,10 +350,10 @@ const SettingsComponent = (props) => {
                     <Grid item xs={6}>
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
-                                id="ethnodeurl"
-                                label="Ethereum Node URL"
+                                id="in3nodeurl"
+                                label="IN3 Node URL"
                                 className={classes.textField}
-                                value={props.ethnodeurl}
+                                value={props.in3nodeurl}
                                 onChange={props.handleChange}
                                 variant="outlined"
                             />
