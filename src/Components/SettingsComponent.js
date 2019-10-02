@@ -267,7 +267,7 @@ const SettingsComponent = (props) => {
 
                     <Grid item xs={6}>
                         <FormControl component="fieldset">
-                            <FormLabel component="legend">Assign responsibility</FormLabel>
+                            <FormLabel component="legend">Node Capabilities</FormLabel>
                             <FormGroup row>
 
                                 <FormControlLabel
@@ -323,6 +323,7 @@ const SettingsComponent = (props) => {
                                 />
 
                             </FormGroup>
+                            <a href='https://in3.readthedocs.io/en/develop/spec.html#node-structure'>Details of node Capabilities</a>
                         </FormControl>
                     </Grid>
 

@@ -176,9 +176,6 @@ export default class SettingsContainer extends Component {
         let abi = NodeRegistry.abi;
         let myContract = new web3.eth.Contract(abi, nodeRegistry);
 
-        const proof = true;
-        const multiChain = false;
-
         const _url = this.state.in3nodeurl;
         if (_url === "") {
             alert("IN3 node URL cannot be empty");
@@ -193,7 +190,7 @@ export default class SettingsContainer extends Component {
         const deposit = '0x1';//web3.utils.toHex(Web3.utils.toWei('1', 'wei'));
 
         const PK = this.state.privatekey;
-        const node_signerAcc = web3.eth.accounts.privateKeyToAccount(PK);
+        //const node_signerAcc = web3.eth.accounts.privateKeyToAccount(PK);
 
         const signature = this.signForRegister(_url, _props, _timeout, _weight, window.web3.currentProvider.selectedAddress, PK);
 
@@ -314,5 +311,3 @@ export default class SettingsContainer extends Component {
         )
     }
 }
-
-//export default SettingsContainer;
