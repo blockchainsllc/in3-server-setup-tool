@@ -14,11 +14,13 @@ import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles(theme => ({
+
     container: {
-        flexWrap: 'wrap',
-        justifyContent: 'center'
+        flexWrap: 'wrap'
+        ,justifyContent: 'center'
     },
     textField: {
         marginLeft: theme.spacing(1),
@@ -162,20 +164,20 @@ const SettingsComponent = (props) => {
 
                     <Grid item xs={6}>
                         <FormControl fullWidth className={classes.margin} variant="outlined">
-                            <InputLabel htmlFor="logslevel">Logging Level</InputLabel>
-                            <Select
-                                native
+                            <TextField
+                                id='logslevel'
+                                select
+                                label="Logging Level"
+                                className={classes.textField}
                                 value={props.logslevel}
                                 onChange={props.handleChange}
-                                inputProps={{
-                                    name: 'logslevel',
-                                    id: 'logslevel',
-                                }}
+                                name='logslevel'
+                                variant="outlined"
                             >
-                                <option value="Info">Info</option>
-                                <option value="Debug">Debug</option>
-                                <option value="Error">Error</option>
-                            </Select>
+                                <MenuItem key="Info" value="Info">Info</MenuItem>
+                                <MenuItem key="Debug" value="Debug">Debug</MenuItem>
+                                <MenuItem key="Error" value="Error">Error</MenuItem>
+                            </TextField>
                         </FormControl>
                     </Grid>
 
@@ -237,7 +239,7 @@ const SettingsComponent = (props) => {
                                 <FormControlLabel
                                     control={
                                         <Switch
-                                        id="capproof"
+                                            id="capproof"
                                             checked={props.capproof}
                                             onChange={props.handleChange}
                                             value="1"
@@ -250,7 +252,7 @@ const SettingsComponent = (props) => {
                                 <FormControlLabel
                                     control={
                                         <Switch
-                                        id="capmultichain"
+                                            id="capmultichain"
                                             checked={props.capmultichain}
                                             onChange={props.handleChange}
                                             value="2"
@@ -263,7 +265,7 @@ const SettingsComponent = (props) => {
                                 <FormControlLabel
                                     control={
                                         <Switch
-                                        id="caparchive"
+                                            id="caparchive"
                                             checked={props.caparchive}
                                             onChange={props.handleChange}
                                             value="4"

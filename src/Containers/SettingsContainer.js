@@ -56,20 +56,21 @@ export default class SettingsContainer extends Component {
         if (e.target.name === 'network') {
             newState["noderegistry"] = defaultConfig.servers[this.NW[value]].contract;
         }
-        if (e.target.type === 'radio') {
+        if (e.target.type === 'radio' || e.target.name === 'logslevel') {
             newState[e.target.name] = value;
         }
         else if (e.target.type === 'checkbox') {
             newState[id] = e.target.checked;
         }
-        else
+        else {
             newState[id] = value;
+        }
 
         this.setState(newState);
     }
 
     generateConfig = (e) => {
-        if(this.state.encprivatekey===""){
+        if (this.state.encprivatekey === "") {
             alert("First generate and export encrypted private key");
             return;
         }
@@ -77,37 +78,37 @@ export default class SettingsContainer extends Component {
         const jsonObj = JSON.parse(this.state.encprivatekey);
         const encPKFileName = jsonObj.address + ".json";
 
-        var dockerConf = 
-        "version: '2'\n"+
-        "services:\n"+
-        "   incubed-server:\n"+
-        "       image: slockit/in3-node:latest\n"+
-        "       volumes:\n"+
-        "       - ./:/secure                                                # directory where the private key is stored\n"+
-        "\n"+
-        "       ports:\n"+
-        "       - 8500:8500/tcp                                             # open the port 8500 to be accessed by the public\n"+
-        "       commands:\n"+
-        "       - --privateKey=/secure/" + encPKFileName + "                # internal path to the key\n"+
-        "       - --privateKeyPassphrase="+ (this.state.keyphrase1) + "     # passphrase to unlock the key\n"+
-        "       - --chain="+ this.NW[this.state.network] + "                # chain\n"+
-        "       - --rpcUrl=http://incubed-parity:8545                       # URL of the eth client\n"+
-        "       - --registry="+ this.state.noderegistry + " # URL of the Incubed registry\n";
+        var dockerConf =
+            "version: '2'\n" +
+            "services:\n" +
+            "   incubed-server:\n" +
+            "       image: slockit/in3-node:latest\n" +
+            "       volumes:\n" +
+            "       - ./:/secure                                                # directory where the private key is stored\n" +
+            "\n" +
+            "       ports:\n" +
+            "       - 8500:8500/tcp                                             # open the port 8500 to be accessed by the public\n" +
+            "       commands:\n" +
+            "       - --privateKey=/secure/" + encPKFileName + "                # internal path to the key\n" +
+            "       - --privateKeyPassphrase=" + (this.state.keyphrase1) + "     # passphrase to unlock the key\n" +
+            "       - --chain=" + this.NW[this.state.network] + "                # chain\n" +
+            "       - --rpcUrl=http://incubed-parity:8545                       # URL of the eth client\n" +
+            "       - --registry=" + this.state.noderegistry + " # URL of the Incubed registry\n";
 
-        if (this.state.orgname)     dockerConf += "       - --profile-name="    + this.state.orgname        + "\n";
-        if (this.state.profileicon) dockerConf += "       - --profile-icon="    + this.state.profileicon    + "\n";
-        if (this.state.description) dockerConf += "       - --profile-comment=" + this.state.description    + "\n";
-        if (this.state.orgurl)      dockerConf += "       - --profile-url="     + this.state.orgurl         + "\n";
-        if (this.state.logslevel)   dockerConf += "       - --logging-level="   + this.state.logslevel      + "\n";
-        if (this.state.blockheight) dockerConf += "       - --minBlockHeight="  + this.state.blockheight    + "\n";
+        if (this.state.orgname) dockerConf += "       - --profile-name=" + this.state.orgname + "\n";
+        if (this.state.profileicon) dockerConf += "       - --profile-icon=" + this.state.profileicon + "\n";
+        if (this.state.description) dockerConf += "       - --profile-comment=" + this.state.description + "\n";
+        if (this.state.orgurl) dockerConf += "       - --profile-url=" + this.state.orgurl + "\n";
+        if (this.state.logslevel) dockerConf += "       - --logging-level=" + this.state.logslevel + "\n";
+        if (this.state.blockheight) dockerConf += "       - --minBlockHeight=" + this.state.blockheight + "\n";
 
-        dockerConf += "\n"+
-        "   incubed-parity: \n"+
-        "       image: parity/parity                          # parity - image with the getProof - function implemented\n"+
-        "       command: \n"+
-        "       - --auto-update=none                                    # do not automatically update the client\n"+
-        "       - --pruning=archive \n"+
-        "       - --pruning-memory=30000                                # limit storage";
+        dockerConf += "\n" +
+            "   incubed-parity: \n" +
+            "       image: parity/parity                          # parity - image with the getProof - function implemented\n" +
+            "       command: \n" +
+            "       - --auto-update=none                                    # do not automatically update the client\n" +
+            "       - --pruning=archive \n" +
+            "       - --pruning-memory=30000                                # limit storage";
 
         let newState = Object.assign({}, this.props);
         newState['outputData'] = dockerConf;
@@ -120,8 +121,8 @@ export default class SettingsContainer extends Component {
 
         if (this.state.keyphrase1 !== this.state.keyphrase2) {
             alert("Key Pass Phrase doesnt match");
-            newState.keyphrase1= '' ;
-            newState.keyphrase2= '' ;
+            newState.keyphrase1 = '';
+            newState.keyphrase2 = '';
         }
         else if (this.state.keyphrase1 === '') {
             alert("Key Phrase cannot be empty");
@@ -133,9 +134,9 @@ export default class SettingsContainer extends Component {
 
             var str = wallet.toV3String(this.state.keyphrase1);
 
-            newState.encprivatekey= str ;
-            newState.privatekey= wallet.getPrivateKeyString() ;
-            newState.address= wallet.getAddressString() ;
+            newState.encprivatekey = str;
+            newState.privatekey = wallet.getPrivateKeyString();
+            newState.address = wallet.getAddressString();
         }
         this.setState(newState);
     }
@@ -184,7 +185,7 @@ export default class SettingsContainer extends Component {
         }
 
         let nodeRegistryAddr = this.state.noderegistry;
-            //"0x871C190Aa6f16B809c982ffD4679Bd6898754748"; goerli test registry
+        //"0x871C190Aa6f16B809c982ffD4679Bd6898754748"; goerli test registry
         let abi = NodeRegistry.abi;
         let myContract = new web3.eth.Contract(abi, nodeRegistryAddr);
 
