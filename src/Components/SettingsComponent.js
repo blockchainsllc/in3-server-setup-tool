@@ -229,42 +229,6 @@ const SettingsComponent = (props) => {
                         <Button variant="contained" color="primary" className={classes.button} onClick={props.genPrivateKey} >Generate Private Key</Button>
                     </Grid>
 
-                    <Grid item xs={10}>
-                        <FormControl fullWidth className={classes.margin}>
-                            <TextField
-                                id="encprivatekey"
-                                label="Encrypted Private Key"
-                                className={classes.textField}
-                                value={props.encprivatekey}
-                                onChange={props.handleChange}
-                                margin="normal"
-                                variant="outlined"
-                            />
-                        </FormControl>
-                    </Grid>
-
-                    <Grid item xs={2}>
-                        <Button variant="contained" color="primary" className={classes.button} onClick={props.downloadEncPKFile} >Export Encrypted Private Key</Button>
-                    </Grid>
-
-
-
-                </Grid>
-
-                <Grid item xs={12}>
-                    <Button variant="contained" color="primary" className={classes.button} onClick={props.genConfig}>Generate Config</Button>
-                </Grid>
-
-            </PaperComponent>
-
-            <br /> <br />
-
-            <PaperComponent>
-                <Grid container spacing={1}>
-                    <Grid item xs={12}>
-                        <Typography variant="body2" color="textSecondary" component="p">Register IN3 Server</Typography>
-                    </Grid>
-
                     <Grid item xs={6}>
                         <FormControl component="fieldset">
                             <FormLabel component="legend">Node Capabilities</FormLabel>
@@ -327,16 +291,51 @@ const SettingsComponent = (props) => {
                         </FormControl>
                     </Grid>
 
-                    <Grid item xs={6}>
+                    <Grid item xs={4}>
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
-                                id="deposit"
-                                label="Deposit ( Ethers )"
+                                id="encprivatekey"
+                                label="Encrypted Private Key"
                                 className={classes.textField}
-                                value={props.deposit}
+                                value={props.encprivatekey}
+                                onChange={props.handleChange}
+                                margin="normal"
+                                variant="outlined"
+                            />
+                        </FormControl>
+                    </Grid>
+
+                    <Grid item xs={2}>
+                        <Button variant="contained" color="primary" className={classes.button} onClick={props.downloadEncPKFile} >Export Encrypted Private Key</Button>
+                    </Grid>
+
+
+
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Button variant="contained" color="primary" className={classes.button} onClick={props.genConfig}>Generate Config</Button>
+                </Grid>
+
+            </PaperComponent>
+
+            <br /> <br />
+
+            <PaperComponent>
+                <Grid container spacing={1}>
+                    <Grid item xs={12}>
+                        <Typography variant="body2" color="textSecondary" component="p">Register IN3 Server</Typography>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <FormControl fullWidth className={classes.margin}>
+                            <TextField
+                                id="in3nodeurl"
+                                label="IN3 Node URL"
+                                className={classes.textField}
+                                value={props.in3nodeurl}
                                 onChange={props.handleChange}
                                 variant="outlined"
-                                helperText="The deposit stored for the node, which the node will lose if it signs a wrong blockhash."
                             />
                         </FormControl>
                     </Grid>
@@ -358,12 +357,13 @@ const SettingsComponent = (props) => {
                     <Grid item xs={6}>
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
-                                id="in3nodeurl"
-                                label="IN3 Node URL"
+                                id="deposit"
+                                label="Deposit ( Ethers )"
                                 className={classes.textField}
-                                value={props.in3nodeurl}
+                                value={props.deposit}
                                 onChange={props.handleChange}
                                 variant="outlined"
+                                helperText="The deposit stored for the node, which the node will lose if it signs a wrong blockhash."
                             />
                         </FormControl>
                     </Grid>

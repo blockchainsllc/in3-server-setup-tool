@@ -28,8 +28,8 @@ export default class SettingsContainer extends Component {
             address: '',
             encprivatekey: '',
             keystorepath: '',
-            keyphrase1: 'a',
-            keyphrase2: 'a',
+            keyphrase1: '',
+            keyphrase2: '',
 
             capproof: false,
             capmultichain: false,
@@ -53,13 +53,13 @@ export default class SettingsContainer extends Component {
         const { id, value } = e.target;
         let newState = Object.assign({}, this.props);
 
-        if (e.target.name == 'network') {
+        if (e.target.name === 'network') {
             newState["noderegistry"] = defaultConfig.servers[this.NW[value]].contract;
         }
-        if (e.target.type == 'radio') {
+        if (e.target.type === 'radio') {
             newState[e.target.name] = value;
         }
-        else if (e.target.type == 'checkbox'){
+        else if (e.target.type === 'checkbox') {
             newState[id] = e.target.checked;
         }
         else
@@ -69,53 +69,45 @@ export default class SettingsContainer extends Component {
     }
 
     generateConfig = (e) => {
-        var dockerConf = "\n\
-        version: '2'\n\
-        services:\n\
-          incubed-server:\n\
-            image: slockit/in3-server:latest\n";
-
-        if (this.state.keystorepath && this.state.keyphrase) {
-
-            dockerConf += "volumes:\n\
-            - "+ path.dirname(this.state.keystorepath) + ":/secure                                     # directory where the private key is stored";
+        if(this.state.encprivatekey===""){
+            alert("First generate and export encrypted private key");
+            return;
         }
 
-        dockerConf += "\n\
-              ports:\n\
-            - 8500:8500/tcp                                         # open the port 8500 to be accessed by the public\n\n\
-            commands:\n";
+        const jsonObj = JSON.parse(this.state.encprivatekey);
+        const encPKFileName = jsonObj.address + ".json";
 
-        if (this.state.keystorepath && this.state.keyphrase) {
-            dockerConf +=
-                "            - --privateKey=/secure/" + (this.state.keystorepath.replace(/^.*[\\\/]/, '')) + "                       # internal path to the key\n\
-            - --privateKeyPassphrase="+ (this.state.keyphrase) + "                          # passphrase to unlock the key\n";
-        }
-        else {
-            dockerConf += "            - --privateKey=" + this.state.privatekey;
-        }
+        var dockerConf = 
+        "version: '2'\n"+
+        "services:\n"+
+        "   incubed-server:\n"+
+        "       image: slockit/in3-node:latest\n"+
+        "       volumes:\n"+
+        "       - ./:/secure                                                # directory where the private key is stored\n"+
+        "\n"+
+        "       ports:\n"+
+        "       - 8500:8500/tcp                                             # open the port 8500 to be accessed by the public\n"+
+        "       commands:\n"+
+        "       - --privateKey=/secure/" + encPKFileName + "                # internal path to the key\n"+
+        "       - --privateKeyPassphrase="+ (this.state.keyphrase1) + "     # passphrase to unlock the key\n"+
+        "       - --chain="+ this.NW[this.state.network] + "                # chain\n"+
+        "       - --rpcUrl=http://incubed-parity:8545                       # URL of the eth client\n"+
+        "       - --registry="+ this.state.noderegistry + " # URL of the Incubed registry\n";
 
-        dockerConf += "\n\
-            - --chain="+ this.NW[this.state.network] + "                                           # chain (Kovan)\n\
-            - --rpcUrl=http://incubed-parity:8545                   # URL of the Kovan client\n\
-            - --registry="+ this.state.noderegistry + " # URL of the Incubed registry\n";
+        if (this.state.orgname)     dockerConf += "       - --profile-name="    + this.state.orgname        + "\n";
+        if (this.state.profileicon) dockerConf += "       - --profile-icon="    + this.state.profileicon    + "\n";
+        if (this.state.description) dockerConf += "       - --profile-comment=" + this.state.description    + "\n";
+        if (this.state.orgurl)      dockerConf += "       - --profile-url="     + this.state.orgurl         + "\n";
+        if (this.state.logslevel)   dockerConf += "       - --logging-level="   + this.state.logslevel      + "\n";
+        if (this.state.blockheight) dockerConf += "       - --minBlockHeight="  + this.state.blockheight    + "\n";
 
-        if (this.state.orgname) dockerConf += "            - --profile-name=" + this.state.orgname + "\n";
-        if (this.state.profileicon) dockerConf += "            - --profile-icon=" + this.state.profileicon + "\n";
-        if (this.state.description) dockerConf += "            - --profile-comment=" + this.state.description + "\n";
-        if (this.state.orgurl) dockerConf += "            - --profile-url=" + this.state.orgurl + "\n";
-        if (this.state.logslevel) dockerConf += "            - --logging-level=" + this.state.logslevel + "\n";
-        if (this.state.blockheight) dockerConf += "            - --minBlockHeight=" + this.state.blockheight + "\n";
-
-        dockerConf += "\n\
-        incubed - parity: \n\
-        image: slockit / parity - in3: v2.2                          # parity - image with the getProof - function implemented\n\
-        command: \n\
-        - --auto-update=none                                    # do not automatically update the client\n\
-        - --pruning=archive \n\
-        - --pruning-memory=30000                                # limit storage";
-
-        //const { id, value } = e.target;
+        dockerConf += "\n"+
+        "   incubed-parity: \n"+
+        "       image: parity/parity                          # parity - image with the getProof - function implemented\n"+
+        "       command: \n"+
+        "       - --auto-update=none                                    # do not automatically update the client\n"+
+        "       - --pruning=archive \n"+
+        "       - --pruning-memory=30000                                # limit storage";
 
         let newState = Object.assign({}, this.props);
         newState['outputData'] = dockerConf;
@@ -124,12 +116,14 @@ export default class SettingsContainer extends Component {
     }
 
     generatePrivateKey = (e) => {
-        if (this.state.keyphrase1 != this.state.keyphrase2) {
+        let newState = Object.assign({}, this.props);
+
+        if (this.state.keyphrase1 !== this.state.keyphrase2) {
             alert("Key Pass Phrase doesnt match");
-            this.setState({ keyphrase1: '' });
-            this.setState({ keyphrase2: '' });
+            newState.keyphrase1= '' ;
+            newState.keyphrase2= '' ;
         }
-        else if (this.state.keyphrase1 == '') {
+        else if (this.state.keyphrase1 === '') {
             alert("Key Phrase cannot be empty");
         }
         else {
@@ -139,10 +133,11 @@ export default class SettingsContainer extends Component {
 
             var str = wallet.toV3String(this.state.keyphrase1);
 
-            this.setState({ encprivatekey: str });
-            this.setState({ privatekey: wallet.getPrivateKeyString() });
-            this.setState({ address: wallet.getAddressString() });
+            newState.encprivatekey= str ;
+            newState.privatekey= wallet.getPrivateKeyString() ;
+            newState.address= wallet.getAddressString() ;
         }
+        this.setState(newState);
     }
 
     signForRegister = (url, props, timeout, weight, owner, pk) => {
@@ -171,45 +166,53 @@ export default class SettingsContainer extends Component {
     }
 
     sendRegTransaction = (web3, window) => {
+        if (this.state.deposit === "" || (! /^\d*\.?\d*$/.test(this.state.deposit))) {
+            alert("Invalid deposit value");
+            return;
+        }
 
-        let nodeRegistry = "0x871C190Aa6f16B809c982ffD4679Bd6898754748";
-        let abi = NodeRegistry.abi;
-        let myContract = new web3.eth.Contract(abi, nodeRegistry);
-
-        const _url = this.state.in3nodeurl;
-        if (_url === "") {
+        const url = this.state.in3nodeurl;
+        if (url === "") {
             alert("IN3 node URL cannot be empty");
             return;
         }
 
-        const _timeout = web3.utils.toHex(this.state.in3timeout);
-        const _weight = web3.utils.toHex(1);
-        const _props = web3.utils.toHex((this.state.capproof ? 1 : 0) + (this.state.capmultichain ? 2 : 0)
-        + (this.state.caphttp ? 8 : 0)+ (this.state.caparchive ? 4 : 0))
-
-        const deposit = '0x1';//web3.utils.toHex(Web3.utils.toWei('1', 'wei'));
-
         const PK = this.state.privatekey;
-        //const node_signerAcc = web3.eth.accounts.privateKeyToAccount(PK);
+        if (PK === '') {
+            alert("First generate private key.");
+            return;
+        }
 
-        const signature = this.signForRegister(_url, _props, _timeout, _weight, window.web3.currentProvider.selectedAddress, PK);
+        let nodeRegistryAddr = this.state.noderegistry;
+            //"0x871C190Aa6f16B809c982ffD4679Bd6898754748"; goerli test registry
+        let abi = NodeRegistry.abi;
+        let myContract = new web3.eth.Contract(abi, nodeRegistryAddr);
+
+        const timeout = web3.utils.toHex(this.state.in3timeout);
+        const weight = web3.utils.toHex(1);
+        const props = web3.utils.toHex((this.state.capproof ? 1 : 0) + (this.state.capmultichain ? 2 : 0)
+            + (this.state.caphttp ? 8 : 0) + (this.state.caparchive ? 4 : 0))
+
+        const deposit = web3.utils.toHex(Web3.utils.toWei('1', 'ether')); //'0x1';
+        const signature = this.signForRegister(url, props, timeout, weight, window.web3.currentProvider.selectedAddress, PK);
 
         myContract.methods
             .registerNodeFor(
-                _url, _props, _timeout, this.state.address, _weight, signature.v, signature.r, signature.s)
+                url, props, timeout, this.state.address, weight, signature.v, signature.r, signature.s)
             .send({
                 from: window.web3.currentProvider.selectedAddress,
-                to: nodeRegistry,
-                value: deposit
-                , gas: '30000'
+                to: nodeRegistryAddr,
+                value: deposit,
+                gas: '30000'
             }).on('transactionHash', function (hash) {
-                alert("Tx Hash" + hash);
+                alert("Transaction Hash: " + hash);
             })
-            .on('confirmation', function (confirmationNumber, receipt) {
-                alert(confirmationNumber + " " + receipt)
-            })
+            /*.on('confirmation', function (confirmationNumber, receipt) {
+                alert("Confirmation Num: "+confirmationNumber + " Receipt: " + receipt)
+
+            })*/
             .on('receipt', function (receipt) {
-                alert(receipt);
+                console.log("Receipt: " + receipt.toString());
             })
             .on('error', function (err) { alert(err) });
     }
@@ -248,7 +251,7 @@ export default class SettingsContainer extends Component {
 
     downloadEncPKFile = () => {
 
-        if (this.state.encprivatekey == '') {
+        if (this.state.encprivatekey === '') {
             alert("First generate private key.");
         }
         else {
@@ -260,7 +263,7 @@ export default class SettingsContainer extends Component {
             const jsonObj = JSON.parse(json);
 
             element.download = jsonObj.address + ".json";
-            document.body.appendChild(element); // Required for this to work in FireFox
+            document.body.appendChild(element);
             element.click();
         }
     }
