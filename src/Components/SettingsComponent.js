@@ -36,6 +36,9 @@ const useStyles = makeStyles(theme => ({
     margin: {
         margin: theme.spacing(1),
     },
+    margin2: {
+        margin: theme.spacing(3),
+    },
     button: {
         margin: theme.spacing(1),
     },
@@ -119,7 +122,7 @@ const SettingsComponent = (props) => {
                     </Grid>
 
                     <Grid item xs={6}>
-                        <FormControl fullWidth className={classes.margin} component="fieldset">
+                        <FormControl fullWidth className={classes.margin2} component="fieldset">
 
                             <FormLabel component="legend">Chain</FormLabel>
                             <RadioGroup aria-label="position" name="network" value={props.network} onChange={props.handleChange} row>
@@ -128,21 +131,18 @@ const SettingsComponent = (props) => {
                                     value="Mainnet"
                                     control={<Radio color="primary" />}
                                     label="Mainnet"
-                                    labelPlacement="start"
                                 />
 
                                 <FormControlLabel
                                     value="Kovan"
                                     control={<Radio color="primary" />}
                                     label="Kovan"
-                                    labelPlacement="start"
                                 />
 
                                 <FormControlLabel
                                     value="Goerli"
                                     control={<Radio color="primary" />}
                                     label="Goerli"
-                                    labelPlacement="start"
                                 />
 
                             </RadioGroup>
@@ -232,7 +232,7 @@ const SettingsComponent = (props) => {
                     </Grid>
 
                     <Grid item xs={6}>
-                        <FormControl component="fieldset">
+                        <FormControl  fullWidth className={classes.margin2} component="fieldset">
                             <FormLabel component="legend">Node Capabilities</FormLabel>
                             <FormGroup row>
 
