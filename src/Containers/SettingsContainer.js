@@ -32,7 +32,7 @@ export default class SettingsContainer extends Component {
             keyphrase2: '',
             keyexported: false,
 
-            capproof: false,
+            capproof: true,
             capmultichain: false,
             caphttp: false,
             caparchive: false,
