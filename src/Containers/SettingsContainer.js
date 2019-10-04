@@ -30,6 +30,7 @@ export default class SettingsContainer extends Component {
             keystorepath: '',
             keyphrase1: '',
             keyphrase2: '',
+            keyexported: false,
 
             capproof: false,
             capmultichain: false,
@@ -72,6 +73,9 @@ export default class SettingsContainer extends Component {
     generateConfig = (e) => {
         if (this.state.encprivatekey === "") {
             alert("First generate and export encrypted private key");
+            return;
+        } else if(!this.state.keyexported){
+            alert("First export encrypted private key.");
             return;
         }
 
@@ -252,6 +256,10 @@ export default class SettingsContainer extends Component {
     };
 
     downloadEncPKFile = () => {
+        let newState = Object.assign({}, this.props);
+        newState.keyexported = false;
+        
+        
 
         if (this.state.encprivatekey === '') {
             alert("First generate private key.");
@@ -267,7 +275,10 @@ export default class SettingsContainer extends Component {
             element.download = jsonObj.address + ".json";
             document.body.appendChild(element);
             element.click();
+            newState.keyexported = true;
         }
+
+        this.setState(newState);
     }
 
     render() {
