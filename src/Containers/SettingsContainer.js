@@ -88,7 +88,7 @@ export default class SettingsContainer extends Component {
             "\n" +
             "       ports:\n" +
             "       - 8500:8500/tcp                                             # open the port 8500 to be accessed by the public\n" +
-            "       commands:\n" +
+            "       command:\n" +
             "       - --privateKey=/secure/" + encPKFileName + "                # internal path to the key\n" +
             "       - --privateKeyPassphrase=" + (this.state.keyphrase1) + "     # passphrase to unlock the key\n" +
             "       - --chain=" + this.NW[this.state.network] + "                # chain\n" +
@@ -104,11 +104,12 @@ export default class SettingsContainer extends Component {
 
         dockerConf += "\n" +
             "   incubed-parity: \n" +
-            "       image: parity/parity                          # parity - image with the getProof - function implemented\n" +
+            "       image: slockit/parity-time-maschine:v0.0.1               # parity - image with the getProof - function implemented\n" +
             "       command: \n" +
             "       - --auto-update=none                                    # do not automatically update the client\n" +
-            "       - --pruning=archive \n" +
-            "       - --pruning-memory=30000                                # limit storage";
+            "       - --pruning="+ (this.state.caparchive?"archive":"auto") +"\n"+
+            "       - --pruning-memory=30000                                # limit storage\n"+
+            "       - --chain="+this.state.network.toLowerCase();
 
         let newState = Object.assign({}, this.props);
         newState['outputData'] = dockerConf;
@@ -185,7 +186,7 @@ export default class SettingsContainer extends Component {
         }
 
         let nodeRegistryAddr = this.state.noderegistry;
-        //"0x871C190Aa6f16B809c982ffD4679Bd6898754748"; goerli test registry
+        //"0x871C190Aa6f16B809c982ffD4679Bd6898754748"; //goerli test registry
         let abi = NodeRegistry.abi;
         let myContract = new web3.eth.Contract(abi, nodeRegistryAddr);
 
