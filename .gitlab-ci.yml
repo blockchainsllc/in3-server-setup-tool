@@ -36,7 +36,7 @@ package-docker:
     - docker:dind
   script:
     - cd deployment
-    - rancher -w up -d --prune -p -s in3-server-setup-wizard -c --force-upgrade
+    - rancher -w up -f docker-compose.yml -d --prune -p -s in3-server-setup-wizard -c --force-upgrade
 
 # Production deployments
 deploy-to-rancher:
