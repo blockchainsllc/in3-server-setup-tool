@@ -1,7 +1,7 @@
 version: '2'
 services:
   nd-1:
-    image: docker.slock.it/in3/in3server-setup-wizard:latest
+    image: docker.slock.it/in3/in3server-setup-wizard:${CI_COMMIT_REF_NAME}
     stdin_open: true
     tty: true
     ports:
