@@ -57,7 +57,7 @@ const SettingsComponent = (props) => {
             <PaperComponent>
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
-                        <Typography variant="body2" color="textSecondary" component="p">Meta data Settings</Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">Meta data Settings (Optional)</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
@@ -289,7 +289,7 @@ const SettingsComponent = (props) => {
                                 />
 
                             </FormGroup>
-                            <a href='https://in3.readthedocs.io/en/develop/spec.html#node-structure'>Details of node Capabilities</a>
+                            <a href='https://in3.readthedocs.io/en/develop/spec.html#node-structure' target="_blank">Details of node Capabilities</a>
                         </FormControl>
                     </Grid>
 
@@ -346,7 +346,7 @@ const SettingsComponent = (props) => {
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
                                 id="in3timeout"
-                                label="IN3 Timeout (seconds)"
+                                label="IN3 Timeout (hours)"
                                 className={classes.textField}
                                 value={props.in3timeout}
                                 onChange={props.handleChange}

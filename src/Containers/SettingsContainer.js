@@ -38,7 +38,7 @@ export default class SettingsContainer extends Component {
             caparchive: false,
 
             deposit: '',
-            in3timeout: '3600',
+            in3timeout: '1',
             in3nodeurl: '',
             outputData: ''
         }
@@ -74,7 +74,7 @@ export default class SettingsContainer extends Component {
         if (this.state.encprivatekey === "") {
             alert("First generate and export encrypted private key");
             return;
-        } else if(!this.state.keyexported){
+        } else if (!this.state.keyexported) {
             alert("First export encrypted private key.");
             return;
         }
@@ -111,9 +111,9 @@ export default class SettingsContainer extends Component {
             "       image: slockit/parity-time-maschine:v0.0.1               # parity - image with the getProof - function implemented\n" +
             "       command: \n" +
             "       - --auto-update=none                                    # do not automatically update the client\n" +
-            "       - --pruning="+ (this.state.caparchive?"archive":"auto") +"\n"+
-            "       - --pruning-memory=30000                                # limit storage\n"+
-            "       - --chain="+this.state.network.toLowerCase();
+            "       - --pruning=" + (this.state.caparchive ? "archive" : "auto") + "\n" +
+            "       - --pruning-memory=30000                                # limit storage\n" +
+            "       - --chain=" + this.state.network.toLowerCase();
 
         let newState = Object.assign({}, this.props);
         newState['outputData'] = dockerConf;
@@ -190,11 +190,11 @@ export default class SettingsContainer extends Component {
         }
 
         let nodeRegistryAddr = this.state.noderegistry;
-        //"0x871C190Aa6f16B809c982ffD4679Bd6898754748"; //goerli test registry
+            //"0x63eB60f0284c54376340ae0F84B091d63Cb9f339"; //goerli test registry
         let abi = NodeRegistry.abi;
         let myContract = new web3.eth.Contract(abi, nodeRegistryAddr);
 
-        const timeout = web3.utils.toHex(this.state.in3timeout);
+        const timeout = web3.utils.toHex((parseFloat(this.state.in3timeout) * 60 * 60));
         const weight = web3.utils.toHex(1);
         const props = web3.utils.toHex((this.state.capproof ? 1 : 0) + (this.state.capmultichain ? 2 : 0)
             + (this.state.caphttp ? 8 : 0) + (this.state.caparchive ? 4 : 0))
@@ -208,8 +208,8 @@ export default class SettingsContainer extends Component {
             .send({
                 from: window.web3.currentProvider.selectedAddress,
                 to: nodeRegistryAddr,
-                value: deposit,
-                gas: '30000'
+                value: deposit//,
+                //gas: '30000'
             }).on('transactionHash', function (hash) {
                 alert("Transaction Hash: " + hash);
             })
@@ -258,8 +258,6 @@ export default class SettingsContainer extends Component {
     downloadEncPKFile = () => {
         let newState = Object.assign({}, this.props);
         newState.keyexported = false;
-        
-        
 
         if (this.state.encprivatekey === '') {
             alert("First generate private key.");
@@ -320,9 +318,8 @@ export default class SettingsContainer extends Component {
                 <DialogComponent
                     outputData={this.state.outputData}
                     handleChange={this.handleClose}
-                >
-
-                </DialogComponent>
+                />
+                
             </div>
         )
     }

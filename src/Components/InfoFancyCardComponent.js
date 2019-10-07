@@ -55,7 +55,10 @@ export default function InfoFancyCardComponent() {
                             Incubed Server Setup Wizard
           </Typography>
                         <Typography variant="body2" color="textSecondary" component="p">
-                        The Minimal Verification Client. You can use following wizad for generating incube server settings JSON file or command line.
+                        The Minimal Verification Client. You can use following wizad for generating incube server settings JSON file or command line. <br/>
+                        1. First fill form for server settings then generate and export encrypted Private key. <br />
+                        2. Export docker compose file. <b>Make sure you export docker-compose file to same dir in which encrypted private key is located.</b> <br />
+                        3. Start in3 node, and then register your in3 node using this wizard.
           </Typography>
         </CardContent>
                 <CardActions style={{justifyContent: 'center'}}>
