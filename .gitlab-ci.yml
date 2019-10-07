@@ -4,6 +4,7 @@ variables:
   RELEASE_IMAGE_TAG: $CI_REGISTRY_IMAGE:latest
 stages:
   - package
+  - deploy
 
 package-docker:
   stage: package
@@ -18,3 +19,29 @@ package-docker:
     - docker tag $COMMIT_IMAGE_TAG $RELEASE_IMAGE_TAG
     - docker push $RELEASE_IMAGE_TAG
     - docker push $COMMIT_IMAGE_TAG
+
+# Deployment template
+.deploy-tmpl:
+  stage: deploy
+  tags:
+    - short-jobs
+  #  only:
+  #    - /^v[0-9]+.[0-9]+.[0-9]+(\-RC[0-9]+)?$/
+  #  except:
+  #    - branches
+  #  when: manual
+  #  allow_failure: false
+  image: docker.slock.it/build-images/deployment
+  services:
+    - docker:dind
+  script:
+    - cd deployment
+    - rancher -w up -d --prune -p -s in3-server-setup-wizard -c --force-upgrade
+
+# Production deployments
+deploy-to-rancher:
+  extends:
+    - .deploy-tmpl
+
+
+
