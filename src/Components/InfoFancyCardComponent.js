@@ -37,7 +37,11 @@ export default function InfoFancyCardComponent() {
   const classes = useStyles();
 
   const handlePageChange = (location) => {
-    window.location.href = location;
+    window.open(
+      location,
+      '_blank'
+    );
+
   }
 
   return (
