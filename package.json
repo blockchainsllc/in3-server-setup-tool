@@ -7,8 +7,7 @@
     "@material-ui/icons": "^4.4.3",
     "ethereumjs-util": "^6.1.0",
     "ethereumjs-wallet": "^0.6.3",
-    "in3": "^2.0.3-RC1",
-    "in3-common": "0.0.1-beta.7",
+    "in3-common": "2.0.3-RC1",
     "path": "^0.12.7",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
@@ -18,8 +17,8 @@
     "web3-utils": "^1.2.1"
   },
   "scripts": {
-    "start": "cp ./node_modules/in3/js/src/client/defaultConfig.json ./src/ ; react-scripts start",
-    "build": "cp ./node_modules/in3/js/src/client/defaultConfig.json ./src/ ; react-scripts build"
+    "start": "cp ./node_modules/in3-common/js/defaultConfig.json ./src/ ; react-scripts start",
+    "build": "cp ./node_modules/in3-common/js/defaultConfig.json ./src/ ; react-scripts build"
   },
   "eslintConfig": {
     "extends": "react-app"

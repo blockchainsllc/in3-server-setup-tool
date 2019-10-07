@@ -108,7 +108,7 @@ export default class SettingsContainer extends Component {
 
         dockerConf += "\n" +
             "   incubed-parity: \n" +
-            "       image: slockit/parity-time-maschine:v0.0.1               # parity - image with the getProof - function implemented\n" +
+            "       image:  parity/parity:stable               # parity - image with the getProof - function implemented\n" +
             "       command: \n" +
             "       - --auto-update=none                                    # do not automatically update the client\n" +
             "       - --pruning=" + (this.state.caparchive ? "archive" : "auto") + "\n" +
@@ -190,7 +190,6 @@ export default class SettingsContainer extends Component {
         }
 
         let nodeRegistryAddr = this.state.noderegistry;
-            //"0x63eB60f0284c54376340ae0F84B091d63Cb9f339"; //goerli test registry
         let abi = NodeRegistry.abi;
         let myContract = new web3.eth.Contract(abi, nodeRegistryAddr);
 

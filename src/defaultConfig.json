@@ -3,8 +3,7 @@
   "signatureCount": 0,
   "minDeposit": 0,
   "autoUpdateList": true,
-  "requestCount": 3,
-  "loggerUrl": "https://search-test-usn.slock.it/logIn3",
+  "requestCount": 1,
   "chainId": "0x1",
   "mainChain": "0x2a",
   "chainRegistry": "0x53d02daE1253CDf7C9b93a6ED0462d97697C85F9",
@@ -14,15 +13,16 @@
       "name": "mainnet",
       "needsUpdate": true,
       "contractChain": "0x1",
-      "contract": "0x2736D225f85740f42D17987100dc8d58e9e16252",
+      "registryId": "0x423dd84f33a44f60e5d58090dcdcc1c047f57be895415822f211b8cd1fd692e3",
+      "contract": "0x64abe24afbba64cae47e3dc3ced0fcab95e4edd5",
       "nodeList": [
         {
           "deposit": 0,
           "chainIds": [
             "0x1"
           ],
-          "address": "0x784bfa9eb182C3a02DbeB5285e3dBa92d717E07a",
-          "url": "https://in3.slock.it/mainnet/nd-1",
+          "address": "0x45d45e6ff99e6c34a235d263965910298985fcfe",
+          "url": "https://in3-v2.slock.it/mainnet/nd-1",
           "props": 65535
         },
         {
@@ -30,35 +30,8 @@
           "chainIds": [
             "0x1"
           ],
-          "address": "0x243D5BB48A47bEd0F6A89B61E4660540E856A33D",
-          "url": "https://in3.slock.it/mainnet/nd-5",
-          "props": 65535
-        }
-      ]
-    },
-    "0x44d": {
-      "name": "tobalaba",
-      "verifier": "eth",
-      "needsUpdate": true,
-      "contractChain": "0x44d",
-      "contract": "0x845E484b505443814B992Bf0319A5e8F5e407879",
-      "nodeList": [
-        {
-          "deposit": 0,
-          "chainIds": [
-            "0x44d"
-          ],
-          "address": "0x8f354b72856e516f1e931c97d1ed3bf1709f38c9",
-          "url": "https://in3.slock.it/tobalaba/nd-3",
-          "props": 65535
-        },
-        {
-          "deposit": 0,
-          "chainIds": [
-            "0x44d"
-          ],
-          "address": "0x784bfa9eb182c3a02dbeb5285e3dba92d717e07a",
-          "url": "https://in3.slock.it/tobalaba/nd-1",
+          "address": "0x1fe2e9bf29aa1938859af64c413361227d04059a",
+          "url": "https://in3-v2.slock.it/mainnet/nd-2",
           "props": 65535
         }
       ]
@@ -84,7 +57,7 @@
     "0x5": {
       "name": "goerli",
       "verifier": "eth",
-      "chainSpec": [
+      "deactivated_chainSpec": [
         {
           "block": 0,
           "engine": "clique",
@@ -95,15 +68,16 @@
       ],
       "needsUpdate": true,
       "contractChain": "0x5",
-      "contract": "0x85613723dB1Bc29f332A37EeF10b61F8a4225c7e",
+      "registryId": "0xa551fe03f855370f0fca881f5f2f6b8f7731a92e371c4de5f5c610833881059c",
+      "contract": "0xfea298b288d232a256ae0ad5941e5c890b1db691",
       "nodeList": [
         {
           "deposit": 0,
           "chainIds": [
             "0x5"
           ],
-          "address": "0x8f354b72856e516f1e931c97d1ed3bf1709f38c9",
-          "url": "https://in3.slock.it/goerli/nd-3",
+          "address": "0x45d45e6ff99e6c34a235d263965910298985fcfe",
+          "url": "https://in3-v2.slock.it/goerli/nd-1",
           "props": 65535
         },
         {
@@ -111,35 +85,8 @@
           "chainIds": [
             "0x5"
           ],
-          "address": "0x784bfa9eb182c3a02dbeb5285e3dba92d717e07a",
-          "url": "https://in3.slock.it/goerli/nd-1",
-          "props": 65535
-        }
-      ]
-    },
-    "0x4b1": {
-      "name": "evan",
-      "verifier": "eth",
-      "needsUpdate": true,
-      "contractChain": "0x4b1",
-      "contract": "0x85613723dB1Bc29f332A37EeF10b61F8a4225c7e",
-      "nodeList": [
-        {
-          "deposit": 0,
-          "chainIds": [
-            "0x4b1"
-          ],
-          "address": "0xeaC4B82273e828878fD765D993800891bA2E3475",
-          "url": "http://52.47.61.24:8500",
-          "props": 65535
-        },
-        {
-          "deposit": 0,
-          "chainIds": [
-            "0x4b1"
-          ],
-          "address": "0x243D5BB48A47bEd0F6A89B61E4660540E856A33A",
-          "url": "https://in3.slock.it/evan/nd-5",
+          "address": "0x1fe2e9bf29aa1938859af64c413361227d04059a",
+          "url": "https://in3-v2.slock.it/goerli/nd-2",
           "props": 65535
         }
       ]
@@ -188,15 +135,16 @@
       ],
       "needsUpdate": true,
       "contractChain": "0x2a",
-      "contract": "0x27a37a1210df14f7e058393d026e2fb53b7cf8c1",
+      "registryId": "0x97a2d1de242ffd28c95eed23a336578c406b5966daf2818f0bd1c310f7292307",
+      "contract": "0x33f55122c21cc87b539e7003f7ab16229bc3af69",
       "nodeList": [
         {
           "deposit": 0,
           "chainIds": [
             "0x2a"
           ],
-          "address": "0x8f354b72856e516f1e931c97d1ed3bf1709f38c9",
-          "url": "https://in3.slock.it/kovan/nd-3",
+          "address": "0x45d45e6ff99e6c34a235d263965910298985fcfe",
+          "url": "https://in3-v2.slock.it/kovan/nd-1",
           "props": 65535
         },
         {
@@ -204,13 +152,39 @@
           "chainIds": [
             "0x2a"
           ],
-          "address": "0x243D5BB48A47bEd0F6A89B61E4660540E856A33D",
-          "url": "https://in3.slock.it/kovan/nd-5",
+          "address": "0x1fe2e9bf29aa1938859af64c413361227d04059a",
+          "url": "https://in3-v2.slock.it/kovan/nd-2",
           "props": 65535
         }
       ]
     },
-    "0x7d0": {
+    "0x44d": {
+      "name": "tobalaba",
+      "verifier": "eth",
+      "needsUpdate": true,
+      "contractChain": "0x44d",
+      "contract": "0x845E484b505443814B992Bf0319A5e8F5e407879",
+      "nodeList": [
+        {
+          "deposit": 0,
+          "chainIds": [
+            "0x44d"
+          ],
+          "address": "0x8f354b72856e516f1e931c97d1ed3bf1709f38c9",
+          "url": "https://in3.slock.it/tobalaba/nd-3",
+          "props": 65535
+        },
+        {
+          "deposit": 0,
+          "chainIds": [
+            "0x44d"
+          ],
+          "address": "0x784bfa9eb182c3a02dbeb5285e3dba92d717e07a",
+          "url": "https://in3.slock.it/tobalaba/nd-1",
+          "props": 65535
+        }
+      ]
+    },    "0x7d0": {
       "name": "ipfs",
       "verifier": "ipfs",
       "needsUpdate": true,
