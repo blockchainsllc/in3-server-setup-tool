@@ -4,5 +4,3 @@ services:
     image: docker.slock.it/in3/in3server-setup-wizard:${CI_COMMIT_REF_NAME}
     stdin_open: true
     tty: true
-    ports:
-      - "3000:3000"
