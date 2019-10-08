@@ -83,37 +83,68 @@ export default class SettingsContainer extends Component {
         const encPKFileName = jsonObj.address + ".json";
 
         var dockerConf =
-            "version: '2'\n" +
-            "services:\n" +
-            "   incubed-server:\n" +
-            "       image: slockit/in3-node:latest\n" +
-            "       volumes:\n" +
-            "       - ./:/secure                                                # directory where the private key is stored\n" +
-            "\n" +
-            "       ports:\n" +
-            "       - 8500:8500/tcp                                             # open the port 8500 to be accessed by the public\n" +
-            "       command:\n" +
-            "       - --privateKey=/secure/" + encPKFileName + "                # internal path to the key\n" +
-            "       - --privateKeyPassphrase=" + (this.state.keyphrase1) + "     # passphrase to unlock the key\n" +
-            "       - --chain=" + this.NW[this.state.network] + "                # chain\n" +
-            "       - --rpcUrl=http://incubed-parity:8545                       # URL of the eth client\n" +
-            "       - --registry=" + this.state.noderegistry + " # URL of the Incubed registry\n";
+            "version: '2.1' \n" +
+            "services: \n" +
+            " \n" +
+            "    incubed-server: \n" +
+            "        depends_on: \n" +
+            "            incubed-parity: \n" +
+            "                condition : service_healthy \n" +
+            "        image: slockit/in3-node:latest \n" +
+            "        volumes: \n" +
+            "        - ./:/secure                                                # directory where the private key is stored \n" +
+            "        ports: \n" +
+            "        - 8500:8500/tcp                                             # open the port 8500 to be accessed by the public \n" +
+            "        command: \n" +
+            "        - --privateKey=/secure/" + encPKFileName + "                # internal path to the key \n" +
+            "        - --privateKeyPassphrase=" + (this.state.keyphrase1) + "                                # passphrase to unlock the key \n" +
+            "        - --chain=" + this.NW[this.state.network] + "                                              # chain \n" +
+            "        - --rpcUrl=http://172.15.0.3:8545                           # URL of the eth client \n" +
+            "        - --registry=" + this.state.noderegistry + "     #Incubed Registry contract address \n";
+            
+            if (this.state.orgname) dockerConf += "        - --profile-name=" + this.state.orgname + "\n";
+            if (this.state.profileicon) dockerConf += "        - --profile-icon=" + this.state.profileicon + "\n";
+            if (this.state.description) dockerConf += "        - --profile-comment=" + this.state.description + "\n";
+            if (this.state.orgurl) dockerConf += "        - --profile-url=" + this.state.orgurl + "\n";
+            if (this.state.logslevel) dockerConf += "        - --logging-level=" + this.state.logslevel + "\n";
+            if (this.state.blockheight) dockerConf += "        - --minBlockHeight=" + this.state.blockheight + "\n";
 
-        if (this.state.orgname) dockerConf += "       - --profile-name=" + this.state.orgname + "\n";
-        if (this.state.profileicon) dockerConf += "       - --profile-icon=" + this.state.profileicon + "\n";
-        if (this.state.description) dockerConf += "       - --profile-comment=" + this.state.description + "\n";
-        if (this.state.orgurl) dockerConf += "       - --profile-url=" + this.state.orgurl + "\n";
-        if (this.state.logslevel) dockerConf += "       - --logging-level=" + this.state.logslevel + "\n";
-        if (this.state.blockheight) dockerConf += "       - --minBlockHeight=" + this.state.blockheight + "\n";
-
-        dockerConf += "\n" +
-            "   incubed-parity: \n" +
-            "       image:  parity/parity:stable               # parity - image with the getProof - function implemented\n" +
-            "       command: \n" +
-            "       - --auto-update=none                                    # do not automatically update the client\n" +
-            "       - --pruning=" + (this.state.caparchive ? "archive" : "auto") + "\n" +
-            "       - --pruning-memory=30000                                # limit storage\n" +
-            "       - --chain=" + this.state.network.toLowerCase();
+            dockerConf+=
+            "        networks: \n" +
+            "            incubed_net: \n" +
+            "               ipv4_address: '172.15.0.2' \n" +
+            " \n" +
+            "    incubed-parity:  \n" +
+            "        image:  parity/parity:stable                                 \n" +
+            "        command:  \n" +
+            "        - --auto-update=none                                        # do not automatically update the client \n" +
+            "        - --pruning=" + (this.state.caparchive ? "archive" : "auto") + " \n" +
+            "        - --pruning-memory=30000                                    # limit storage \n" +
+            "        - --chain=" + this.state.network.toLowerCase()+" \n" +
+            "        - --jsonrpc-interface=172.15.0.3 \n" +
+            "        - --jsonrpc-port=8545 \n" +
+            "        - --ws-interface=172.15.0.3 \n" +
+            "        - --ws-port=8546 \n" +
+            "        - --jsonrpc-experimental \n" +
+            "        ports: \n" +
+            "        - 8545:8545 \n" +
+            "        - 8546:8546 \n" +
+            "        healthcheck: \n" +
+            "            test: [\"CMD-SHELL\", \"curl --data '{\\\"method\\\":\\\"eth_blockNumber\\\",\\\"params\\\":[],\\\"id\\\":1,\\\"jsonrpc\\\":\\\"2.0\\\"}' -H 'Content-Type: application/json' -X POST http://172.15.0.3:8545\"] \n" +
+            "            interval: 10s \n" +
+            "            timeout: 10s \n" +
+            "            retries: 5 \n" +
+            "        networks: \n" +
+            "            incubed_net: \n" +
+            "                ipv4_address: '172.15.0.3' \n" +
+            "  \n" +
+            "networks: \n" +
+            "    incubed_net: \n" +
+            "        driver: bridge \n" +
+            "        ipam: \n" +
+            "            driver: default \n" +
+            "            config: \n" +
+            "            - subnet: 172.15.0.0/16 \n";
 
         let newState = Object.assign({}, this.props);
         newState['outputData'] = dockerConf;
@@ -318,7 +349,7 @@ export default class SettingsContainer extends Component {
                     outputData={this.state.outputData}
                     handleChange={this.handleClose}
                 />
-                
+
             </div>
         )
     }
