@@ -1,5 +1,5 @@
 
-##Incubed Server Setup Wizard
+## Incubed Server Setup Wizard
 This wizard could be used for registering Incubed server on node registry contract and generating IN3 Server docker-compose file.
 
 #### Starting Wizard
