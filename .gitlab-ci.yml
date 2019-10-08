@@ -43,5 +43,27 @@ deploy-to-rancher:
   extends:
     - .deploy-tmpl
 
+deploy-to-dockerhub:
+  stage: deploy
+#  when: manual
+#  only:
+#    - /^v[0-9]+.[0-9]+.[0-9]+(\-RC[0-9]+)?$/
+#  except:
+#    - branches
+  tags:
+    - short-jobs
+  services:
+    - docker:dind
+  image: docker.slock.it/build-images/deployment
+  variables:
+    IMAGE_TAG: slockit/in3-server-setup:$CI_COMMIT_TAG
+  before_script:
+    - docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD} ${DOCKERHUB_REGISTRY}
+  script:
+    - docker build --build-arg NPM_REGISTRY_TOKEN=${NPM_REGISTRY_TOKEN} --build-arg CI_COMMIT_SHA=${CI_COMMIT_SHA} -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+    - docker tag $IMAGE_TAG slockit/in3-server-setup:latest
+    - docker push slockit/in3-server-setup:latest
+
 
 
