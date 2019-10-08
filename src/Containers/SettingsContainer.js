@@ -219,6 +219,10 @@ export default class SettingsContainer extends Component {
             alert("First generate private key.");
             return;
         }
+        if (!this.state.keyexported) {
+            alert("Please export encrypted private key first.");
+            return;
+        }
 
         let nodeRegistryAddr = this.state.noderegistry;
         let abi = NodeRegistry.abi;
