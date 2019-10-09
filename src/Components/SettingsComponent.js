@@ -345,6 +345,21 @@ const SettingsComponent = (props) => {
                         <Button variant="contained" color="primary" className={classes.button} onClick={props.downloadEncPKFile} >Export Encrypted Private Key</Button>
                     </Grid>
 
+                    <Grid item xs={12}>
+                        <FormControl fullWidth className={classes.margin}>
+                            <TextField
+                                id="ethnodeurl"
+                                label="Ethereum Node URL ( if you dont want to use parity as service in docker-compose)"
+                                className={classes.textField}
+                                value={props.ethnodeurl}
+                                onChange={props.handleChange}
+                                variant="outlined"></TextField>
+                        </FormControl>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <Typography variant="body2" color="textSecondary" component="p" className={classes.margin}>If you want to use parity as service in docker-compose and wait for its sync use 'docker-compose up incubed-parity' first. Once sync complete then start using 'docker-compose up' or for quick testing you can directly specify parity URL in above text field.</Typography>
+                    </Grid>
 
 
                 </Grid>
