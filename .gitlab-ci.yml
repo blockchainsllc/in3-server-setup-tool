@@ -1,70 +1,70 @@
-#image: docker.slock.it/build-images/node:11-alpine
-#variables:
-#  COMMIT_IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
-#  RELEASE_IMAGE_TAG: $CI_REGISTRY_IMAGE:latest
-#stages:
-#  - package
-#  - deploy
+image: docker.slock.it/build-images/node:11-alpine
+variables:
+  COMMIT_IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+  RELEASE_IMAGE_TAG: $CI_REGISTRY_IMAGE:latest
+stages:
+  - package
+  - deploy
 
-#package-docker:
-#  stage: package
-#  tags:
-#    - short-jobs
-#  services:
-#    - docker:dind
-#  image: docker.slock.it/build-images/deployment
-#  script:
-#    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-#    - docker build --build-arg NPM_REGISTRY_TOKEN=${NPM_REGISTRY_TOKEN} --build-arg CI_COMMIT_SHA=${CI_COMMIT_SHA} -t $COMMIT_IMAGE_TAG .
-#    - docker tag $COMMIT_IMAGE_TAG $RELEASE_IMAGE_TAG
-#    - docker push $RELEASE_IMAGE_TAG
-#    - docker push $COMMIT_IMAGE_TAG
+package-docker:
+  stage: package
+  tags:
+    - short-jobs
+  services:
+    - docker:dind
+  image: docker.slock.it/build-images/deployment
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build --build-arg NPM_REGISTRY_TOKEN=${NPM_REGISTRY_TOKEN} --build-arg CI_COMMIT_SHA=${CI_COMMIT_SHA} -t $COMMIT_IMAGE_TAG .
+    - docker tag $COMMIT_IMAGE_TAG $RELEASE_IMAGE_TAG
+    - docker push $RELEASE_IMAGE_TAG
+    - docker push $COMMIT_IMAGE_TAG
 
 # Deployment template
-#.deploy-tmpl:
-#  stage: deploy
-#  tags:
-#    - short-jobs
-#  #  only:
-#  #    - /^v[0-9]+.[0-9]+.[0-9]+(\-RC[0-9]+)?$/
-#  #  except:
-#  #    - branches
-#  #  when: manual
-#  #  allow_failure: false
-#  image: docker.slock.it/build-images/deployment
-#  services:
-#    - docker:dind
-#  script:
-#    - cd Deployment
-#    - rancher -w up -f docker-compose.yml -d --prune -p -s in3-server-setup-wizard -c --force-upgrade
+.deploy-tmpl:
+  stage: deploy
+  tags:
+    - short-jobs
+  #  only:
+  #    - /^v[0-9]+.[0-9]+.[0-9]+(\-RC[0-9]+)?$/
+  #  except:
+  #    - branches
+  #  when: manual
+  #  allow_failure: false
+  image: docker.slock.it/build-images/deployment
+  services:
+    - docker:dind
+  script:
+    - cd Deployment
+    - rancher -w up -f docker-compose.yml -d --prune -p -s in3-server-setup-wizard -c --force-upgrade
 
 # Production deployments
-#deploy-to-rancher:
-#  extends:
-#    - .deploy-tmpl
+deploy-to-rancher:
+  extends:
+    - .deploy-tmpl
 
-#deploy-to-dockerhub:
-#  stage: deploy
-##  when: manual
-##  only:
-##    - /^v[0-9]+.[0-9]+.[0-9]+(\-RC[0-9]+)?$/
-##  except:
-##    - branches
-#  tags:
-#    - short-jobs
-#  services:
-#    - docker:dind
-#  image: docker.slock.it/build-images/deployment
-#  variables:
-#    IMAGE_TAG: slockit/in3-server-setup:$CI_COMMIT_SHA
-#  before_script:
-#    - docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD} ${DOCKERHUB_REGISTRY}
-#  script:
-#    - docker pull $CI_REGISTRY_IMAGE:latest || true
-#    - docker build --cache-from $CI_REGISTRY_IMAGE:latest --build-arg NPM_REGISTRY_TOKEN=${NPM_REGISTRY_TOKEN} --build-arg CI_COMMIT_SHA=${CI_COMMIT_SHA} -t $IMAGE_TAG .
-#    - docker push $IMAGE_TAG
-#    - docker tag $IMAGE_TAG slockit/in3-server-setup:latest
-#    - docker push slockit/in3-server-setup:latest
+deploy-to-dockerhub:
+  stage: deploy
+#  when: manual
+#  only:
+#    - /^v[0-9]+.[0-9]+.[0-9]+(\-RC[0-9]+)?$/
+#  except:
+#    - branches
+  tags:
+    - short-jobs
+  services:
+    - docker:dind
+  image: docker.slock.it/build-images/deployment
+  variables:
+    IMAGE_TAG: slockit/in3-server-setup:$CI_COMMIT_SHA
+  before_script:
+    - docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD} ${DOCKERHUB_REGISTRY}
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE:latest --build-arg NPM_REGISTRY_TOKEN=${NPM_REGISTRY_TOKEN} --build-arg CI_COMMIT_SHA=${CI_COMMIT_SHA} -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+    - docker tag $IMAGE_TAG slockit/in3-server-setup:latest
+    - docker push slockit/in3-server-setup:latest
 
 
 
