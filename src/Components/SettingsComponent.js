@@ -53,8 +53,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 const useStyles = makeStyles(theme => ({
 
     container: {
-        flexWrap: 'wrap'
-        ,justifyContent: 'center'
+        flexWrap: 'wrap',
+         justifyContent: 'center',
+         width: '104%'
     },
     textField: {
         marginLeft: theme.spacing(1),
@@ -266,7 +267,7 @@ const SettingsComponent = (props) => {
                     </Grid>
 
                     <Grid item xs={6}>
-                        <FormControl  fullWidth className={classes.margin2} component="fieldset">
+                        <FormControl fullWidth className={classes.margin2} component="fieldset">
                             <FormLabel component="legend">Node Capabilities</FormLabel>
                             <FormGroup row>
 
@@ -320,6 +321,19 @@ const SettingsComponent = (props) => {
                                         />
                                     }
                                     label="Http"
+                                />
+
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="caponion"
+                                            checked={props.caponion}
+                                            onChange={props.handleChange}
+                                            value="32"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Onion Routing"
                                 />
 
                             </FormGroup>
