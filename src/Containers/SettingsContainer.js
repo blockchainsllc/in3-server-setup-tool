@@ -70,6 +70,7 @@ export default class SettingsContainer extends Component {
             capmultichain: false,
             caphttp: false,
             caparchive: false,
+            caponion: false,
 
             deposit: '',
             in3timeout: '1',
@@ -273,7 +274,7 @@ export default class SettingsContainer extends Component {
         const timeout = web3.utils.toHex((parseFloat(this.state.in3timeout) * 60 * 60));
         const weight = web3.utils.toHex(1);
         const props = web3.utils.toHex((this.state.capproof ? 1 : 0) + (this.state.capmultichain ? 2 : 0)
-            + (this.state.caphttp ? 8 : 0) + (this.state.caparchive ? 4 : 0))
+            + (this.state.caphttp ? 8 : 0) + (this.state.caparchive ? 4 : 0) + (this.state.caponion ? 32 : 0))
 
         const deposit = web3.utils.toHex(Web3.utils.toWei(this.state.deposit, 'ether')); //'0x1';
         const signature = this.signForRegister(url, props, timeout, weight, window.web3.currentProvider.selectedAddress, PK);
@@ -379,6 +380,7 @@ export default class SettingsContainer extends Component {
                     capproof={this.state.capproof}
                     capmultichain={this.state.capmultichain}
                     caphttp={this.state.caphttp}
+                    caponion={this.state.caponion}
                     caparchive={this.state.caparchive}
 
                     deposit={this.state.deposit}
