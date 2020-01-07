@@ -372,7 +372,7 @@ const SettingsComponent = (props) => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Typography variant="body2" color="textSecondary" component="p" className={classes.margin}>If you want to use parity as service in docker-compose and wait for its sync use 'docker-compose up incubed-parity' first. Once sync complete then start using 'docker-compose up' or for quick testing you can directly specify parity URL in above text field.</Typography>
+                        <Typography variant="body2" color="textSecondary" component="p" className={classes.margin}>If you want to use parity as service in docker-compose and wait for its sync use <b>'docker-compose up incubed-parity'</b> first. Once sync complete then start using 'docker-compose up' or for quick testing you can directly specify parity URL in above text field.</Typography>
                     </Grid>
 
 
