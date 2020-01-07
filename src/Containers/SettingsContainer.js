@@ -54,7 +54,7 @@ export default class SettingsContainer extends Component {
             description: '',
             orgurl: '',
             network: 'Mainnet',
-            noderegistry: defaultConfig.servers['0x1'].contract,
+            noderegistry:  defaultConfig.servers['0x1'].contract,
             logslevel: 'Info',
             blockheight: '6',
 
@@ -135,14 +135,15 @@ export default class SettingsContainer extends Component {
             "        image: slockit/in3-node:latest \n" +
             "        volumes: \n" +
             "        - ./:/secure                                                # directory where the private key is stored \n" +
+            "        - ./chaindata:/home/parity/.local/share/io.parity.ethereum/ #directory where parity data is stored \n"+
             "        ports: \n" +
             "        - 8500:8500/tcp                                             # open the port 8500 to be accessed by the public \n" +
             "        command: \n" +
             "        - --privateKey=/secure/" + encPKFileName + "                # internal path to the key \n" +
             "        - --privateKeyPassphrase=" + (this.state.keyphrase1) + "                                # passphrase to unlock the key \n" +
-            "        - --chain=" + this.NW[this.state.network] + "                                              # chain \n" +
-            "        - --rpcUrl=" + (this.state.ethnodeurl === '' ? "http://172.15.0.3:8545" : this.state.ethnodeurl) + "                          # URL of the eth client \n" +
-            "        - --registry=" + this.state.noderegistry + "     #Incubed Registry contract address \n";
+            "        - --chain=" + this.NW[this.state.network] + "                                                # chain \n" +
+            "        - --rpcUrl=" + (this.state.ethnodeurl === '' ? "http://172.15.0.3:8545" : this.state.ethnodeurl) + "                            # URL of the eth client \n" +
+            "        - --registry=" + this.state.noderegistry + "      #Incubed Registry contract address \n";
 
         if (this.state.orgname) dockerConf += "        - --profile-name=" + this.state.orgname + "\n";
         if (this.state.profileicon) dockerConf += "        - --profile-icon=" + this.state.profileicon + "\n";
