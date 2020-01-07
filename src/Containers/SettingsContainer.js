@@ -135,7 +135,6 @@ export default class SettingsContainer extends Component {
             "        image: slockit/in3-node:latest \n" +
             "        volumes: \n" +
             "        - ./:/secure                                                # directory where the private key is stored \n" +
-            "        - ./chaindata:/home/parity/.local/share/io.parity.ethereum/ #directory where parity data is stored \n"+
             "        ports: \n" +
             "        - 8500:8500/tcp                                             # open the port 8500 to be accessed by the public \n" +
             "        command: \n" +
@@ -282,7 +281,8 @@ export default class SettingsContainer extends Component {
 
         myContract.methods
             .registerNodeFor(
-                url, props, timeout, this.state.address, weight, signature.v, signature.r, signature.s)
+                //url, props, signer, weight, depositamount, v, r, s,
+                url, props, this.state.address, weight, deposit, signature.v, signature.r, signature.s)
             .send({
                 from: window.web3.currentProvider.selectedAddress,
                 to: nodeRegistryAddr,
