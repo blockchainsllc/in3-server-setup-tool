@@ -38,7 +38,6 @@ import ethWallet from 'ethereumjs-wallet';
 import DialogComponent from '../Components/DialogComponent';
 import defaultConfig from '../defaultConfig';
 import NodeRegistry from '../Contract/NodeRegistry';
-import path from 'path';
 import Web3 from 'web3';
 
 const in3Common = require('in3-common');
