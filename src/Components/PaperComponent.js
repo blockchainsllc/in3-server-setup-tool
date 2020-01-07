@@ -38,9 +38,6 @@ import Paper from '@material-ui/core/Paper';
 
 
 export default class PaperComponent extends React.Component {
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         const classes = makeStyles(theme => ({

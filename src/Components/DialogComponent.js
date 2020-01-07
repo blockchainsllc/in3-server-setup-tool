@@ -96,7 +96,7 @@ const downloadTxtFile = () => {
 
 const DialogComponent = (props) => {
 
-    var openDialog = ((props.outputData == undefined || props.outputData.length <= 0) ? false : true);
+    var openDialog = ((props.outputData === undefined || props.outputData.length <= 0) ? false : true);
 
     /*const props.handleChange = () => {
         openDialog = false;
