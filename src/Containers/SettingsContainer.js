@@ -73,7 +73,6 @@ export default class SettingsContainer extends Component {
             caponion: false,
 
             deposit: '10000000000000000',
-            in3timeout: '1',
             in3nodeurl: 'w.io',
             outputData: '',
 
@@ -504,7 +503,6 @@ export default class SettingsContainer extends Component {
                     caparchive={this.state.caparchive}
 
                     deposit={this.state.deposit}
-                    in3timeout={this.state.in3timeout}
                     in3nodeurl={this.state.in3nodeurl}
 
                     registerin3={this.registerin3}

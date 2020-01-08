@@ -403,30 +403,16 @@ const SettingsComponent = (props) => {
                         </FormControl>
                     </Grid>
 
-                    <Grid item xs={6}>
-                        <FormControl fullWidth className={classes.margin}>
-                            <TextField
-                                id="in3timeout"
-                                label="IN3 Timeout (hours)"
-                                className={classes.textField}
-                                value={props.in3timeout}
-                                onChange={props.handleChange}
-                                variant="outlined"
-                                helperText="Timeout after which the owner is allowed to receive its stored deposit"
-                            />
-                        </FormControl>
-                    </Grid>
-
-                    <Grid item xs={6}>
+                    <Grid item xs={12}>
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
                                 id="deposit"
-                                label="Deposit ( ERC20 )"
+                                label="Deposit ( ERC20 ) Wei"
                                 className={classes.textField}
                                 value={props.deposit}
                                 onChange={props.handleChange}
                                 variant="outlined"
-                                helperText="The deposit stored for the node, which the node will lose if it signs a wrong blockhash."
+                                helperText="DApp will see if you already have ERC20 wei then It will allow Registry contract first and then will register node, else first it will convert Wei to ERC20."
                             />
                         </FormControl>
                     </Grid>
