@@ -54,7 +54,7 @@ export default class SettingsContainer extends Component {
             description: '',
             orgurl: '',
             network: 'Mainnet',
-            noderegistry:  defaultConfig.servers['0x1'].contract,
+            noderegistry: defaultConfig.servers['0x1'].contract,
             logslevel: 'Info',
             blockheight: '6',
 
@@ -62,8 +62,8 @@ export default class SettingsContainer extends Component {
             address: '',
             encprivatekey: '',
             keystorepath: '',
-            keyphrase1: '',
-            keyphrase2: '',
+            keyphrase1: 'e',
+            keyphrase2: 'e',
             keyexported: false,
 
             capproof: true,
@@ -72,9 +72,9 @@ export default class SettingsContainer extends Component {
             caparchive: false,
             caponion: false,
 
-            deposit: '',
+            deposit: '10000000000000000',
             in3timeout: '1',
-            in3nodeurl: '',
+            in3nodeurl: 'w.io',
             outputData: '',
 
             ethnodeurl: ''
@@ -261,7 +261,7 @@ export default class SettingsContainer extends Component {
                 return receipt;
             })
             .on('error', function (err) {
-                console.log(JSON.stringify(err))
+                console.log(err.message)
                 return err;
             });
     }
@@ -334,12 +334,12 @@ export default class SettingsContainer extends Component {
             return;
         }
 
-        if (!this.state.keyexported) {
-            alert("Please export encrypted private key first.");
-            return;
-        }
+        // if (!this.state.keyexported) {
+        //     alert("Please export encrypted private key first.");
+        //     return;
+        // }
 
-        const nodeRegistryAddr = this.state.noderegistry;
+        const nodeRegistryAddr = "0x4dCA8bCA3bbdA168176440878BBD2691134b4995"//this.state.noderegistry;
         const nodeRegistryContract = new web3.eth.Contract(NodeRegistry.abi, nodeRegistryAddr);
 
         //const timeout = web3.utils.toHex((parseFloat(this.state.in3timeout) * 60 * 60));
@@ -355,10 +355,9 @@ export default class SettingsContainer extends Component {
         const erc20Contract = new web3.eth.Contract(ERC20.abi, erc20Addr)
 
         erc20Contract.methods.balanceOf(window.web3.currentProvider.selectedAddress).call().then((balance) => {
-            alert("ERC20 balance is"+balance)
 
             if (parseInt(balance) < parseInt(deposit)) {
-                alert("Incificient erc20 funds, first converting " + deposit + "ETH to erc20")
+                alert("Incificient erc20 funds, first converting " + deposit + " wei to erc20")
 
                 this.mintERC20(
                     erc20Contract,
@@ -386,7 +385,11 @@ export default class SettingsContainer extends Component {
                                 alert("Registration Completed Successfully")
                             })
                     })
-                });
+                }).catch(
+                    err => {
+                        alert("Some Error Occured. " + JSON.stringify(err))
+                    }
+                )
             }
             else {
                 this.sendApprove(
@@ -403,13 +406,18 @@ export default class SettingsContainer extends Component {
                             weight,
                             deposit,
                             signature,
-                            window.web3.currentProvider.selectedAddress, 
+                            window.web3.currentProvider.selectedAddress,
                             nodeRegistryAddr).then((res) => {
                                 alert("Registration Completed Successfully")
                             })
                     })
             }
-        }).catch(err => alert("Some Error Occured"+ JSON.stringify(err)))
+        }).catch(
+            err => {
+                alert("Some Error Occured. " + err.message)
+                console.log("Some Error Occured." + JSON.stringify(err))
+            }
+        )
     }
 
     registerin3 = () => {
