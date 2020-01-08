@@ -126,9 +126,9 @@ const DialogComponent = (props) => {
                     />
 
                     <Typography gutterBottom>
-                        Export encrypted private key first on same path where you will export docker-compose.yml .
-                        For more details visit: 
-                        https://in3.readthedocs.io/en/latest/getting_started.html
+                        <b>Make sure you already exported encrypted private key on same path where you will export docker-compose.yml .</b>
+                        <br></br>For more details visit:&nbsp;
+                        <a href="https://in3.readthedocs.io/en/latest/getting_started.html"  target="_blank">https://in3.readthedocs.io/en/latest/getting_started.html</a>
           </Typography>
                 </DialogContent>
                 <DialogActions>
