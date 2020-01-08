@@ -38,6 +38,7 @@ import ethWallet from 'ethereumjs-wallet';
 import DialogComponent from '../Components/DialogComponent';
 import defaultConfig from '../defaultConfig';
 import NodeRegistry from '../Contract/NodeRegistry';
+import ERC20 from '../Contract/ERC20Wrapper';
 import Web3 from 'web3';
 
 const in3Common = require('in3-common');
@@ -124,13 +125,13 @@ export default class SettingsContainer extends Component {
             " \n" +
             "    incubed-server: \n";
 
-            if (this.state.ethnodeurl === '')
-            dockerConf+=
-            "        depends_on: \n" +
-            "            incubed-parity: \n" +
-            "                condition : service_healthy \n";
+        if (this.state.ethnodeurl === '')
+            dockerConf +=
+                "        depends_on: \n" +
+                "            incubed-parity: \n" +
+                "                condition : service_healthy \n";
 
-            dockerConf+=
+        dockerConf +=
             "        image: slockit/in3-node:latest \n" +
             "        volumes: \n" +
             "        - ./:/secure                                                # directory where the private key is stored \n" +
@@ -219,13 +220,12 @@ export default class SettingsContainer extends Component {
         this.setState(newState);
     }
 
-    signForRegister = (url, props, timeout, weight, owner, pk) => {
+    signForRegister = (url, props, weight, owner, pk) => {
 
         const msgHash = ethUtil.keccak(
             Buffer.concat([
                 in3Common.serialize.bytes(url),
-                in3Common.serialize.uint64(props),
-                in3Common.serialize.uint64(timeout),
+                in3Common.util.toBuffer(props, 24),
                 in3Common.serialize.uint64(weight),
                 in3Common.serialize.address(owner)
             ])
@@ -244,7 +244,79 @@ export default class SettingsContainer extends Component {
         }
     }
 
+    mintERC20 = (erc20Contract, fromAddr, amount) => {
+        return erc20Contract.methods.mint().send({
+            from: fromAddr,
+            to: erc20Contract.address,
+            value: amount,
+            //gas: '30000'
+        }).on('transactionHash', function (hash) {
+            console.log("Transaction Hash: " + hash);
+        })
+            .on('confirmation', function (confirmationNumber, receipt) {
+                console.log("Confirmation Num: " + JSON.stringify(confirmationNumber) + " Receipt: " + receipt)
+            })
+            .on('receipt', function (receipt) {
+                console.log("Receipt: " + JSON.stringify(receipt));
+                return receipt;
+            })
+            .on('error', function (err) {
+                console.log(JSON.stringify(err))
+                return err;
+            });
+    }
+
+    sendRegisterNode = (registryContract, url, props, signer, weight, deposit, signature, txSender, nodeRegistryAddr) => {
+
+        return registryContract.methods
+            .registerNodeFor(
+                url, props, signer, weight, deposit, signature.v, signature.r, signature.s)
+            .send({
+                from: txSender,
+                to: nodeRegistryAddr,
+                value: 0,
+                //gas: '30000'
+            }).on('transactionHash', function (hash) {
+                console.log("Transaction Hash: " + hash);
+            })
+            .on('confirmation', function (confirmationNumber, receipt) {
+                console.log("Confirmation Num: " + JSON.stringify(confirmationNumber) + " Receipt: " + receipt)
+            })
+            .on('receipt', function (receipt) {
+                console.log("Receipt: " + JSON.stringify(receipt));
+                return receipt
+            })
+            .on('error', function (err) {
+                alert(err)
+                return err
+            });
+    }
+
+    sendApprove = (amount, fromAddr, toAddr, erc20Contract) => {
+        return erc20Contract.methods.approve(toAddr, amount).send({
+            from: fromAddr,
+            to: erc20Contract.address,
+            value: 0//,
+            //gas: '21000'
+        })
+            .on('transactionHash', function (hash) {
+                console.log("Transaction Hash: " + hash);
+            })
+            .on('confirmation', function (confirmationNumber, receipt) {
+                console.log("Confirmation Num: " + confirmationNumber + " Receipt: " + receipt)
+            })
+            .on('receipt', function (receipt) {
+                console.log("Receipt: " + JSON.stringify(receipt));
+                return receipt;
+            })
+            .on('error', function (err) {
+                console.log(JSON.stringify(err))
+                return err;
+            });
+    }
+
     sendRegTransaction = (web3, window) => {
+
         if (this.state.deposit === "" || (! /^\d*\.?\d*$/.test(this.state.deposit))) {
             alert("Invalid deposit value");
             return;
@@ -261,43 +333,83 @@ export default class SettingsContainer extends Component {
             alert("First generate private key.");
             return;
         }
+
         if (!this.state.keyexported) {
             alert("Please export encrypted private key first.");
             return;
         }
 
-        let nodeRegistryAddr = this.state.noderegistry;
-        let abi = NodeRegistry.abi;
-        let myContract = new web3.eth.Contract(abi, nodeRegistryAddr);
+        const nodeRegistryAddr = this.state.noderegistry;
+        const nodeRegistryContract = new web3.eth.Contract(NodeRegistry.abi, nodeRegistryAddr);
 
-        const timeout = web3.utils.toHex((parseFloat(this.state.in3timeout) * 60 * 60));
+        //const timeout = web3.utils.toHex((parseFloat(this.state.in3timeout) * 60 * 60));
         const weight = web3.utils.toHex(1);
         const props = web3.utils.toHex((this.state.capproof ? 1 : 0) + (this.state.capmultichain ? 2 : 0)
-            + (this.state.caphttp ? 8 : 0) + (this.state.caparchive ? 4 : 0) + (this.state.caponion ? 32 : 0))
+            + (this.state.caphttp ? 8 : 0) + (this.state.caparchive ? 4 : 0) + (this.state.caponion ? 20 : 0))
 
-        const deposit = web3.utils.toHex(Web3.utils.toWei(this.state.deposit, 'ether')); //'0x1';
-        const signature = this.signForRegister(url, props, timeout, weight, window.web3.currentProvider.selectedAddress, PK);
+        const deposit = this.state.deposit //web3.utils.toHex(Web3.utils.toWei(this.state.deposit, 'ether'));
+        const signature = this.signForRegister(url, props, weight, window.web3.currentProvider.selectedAddress, PK);
 
-        myContract.methods
-            .registerNodeFor(
-                //url, props, signer, weight, depositamount, v, r, s,
-                url, props, this.state.address, weight, deposit, signature.v, signature.r, signature.s)
-            .send({
-                from: window.web3.currentProvider.selectedAddress,
-                to: nodeRegistryAddr,
-                value: deposit//,
-                //gas: '30000'
-            }).on('transactionHash', function (hash) {
-                alert("Transaction Hash: " + hash);
-            })
-            /*.on('confirmation', function (confirmationNumber, receipt) {
-                alert("Confirmation Num: "+confirmationNumber + " Receipt: " + receipt)
+        //first check erc20 balance
+        const erc20Addr = "0x71357768E92C5178C1f8E69aB841b4ed85225AaD"; // <--- hardcoded for testing now
+        const erc20Contract = new web3.eth.Contract(ERC20.abi, erc20Addr)
 
-            })*/
-            .on('receipt', function (receipt) {
-                console.log("Receipt: " + receipt.toString());
-            })
-            .on('error', function (err) { alert(err) });
+        erc20Contract.methods.balanceOf(window.web3.currentProvider.selectedAddress).call().then((balance) => {
+            alert("ERC20 balance is"+balance)
+
+            if (parseInt(balance) < parseInt(deposit)) {
+                alert("Incificient erc20 funds, first converting " + deposit + "ETH to erc20")
+
+                this.mintERC20(
+                    erc20Contract,
+                    window.web3.currentProvider.selectedAddress,
+                    deposit - balance
+                ).then((res) => {
+
+                    this.sendApprove(
+                        deposit,
+                        window.web3.currentProvider.selectedAddress,
+                        nodeRegistryAddr,
+                        erc20Contract
+                    ).then((res) => {
+
+                        this.sendRegisterNode(
+                            nodeRegistryContract,
+                            url,
+                            props,
+                            this.state.address,
+                            weight,
+                            deposit,
+                            signature,
+                            window.web3.currentProvider.selectedAddress,
+                            nodeRegistryAddr).then((res) => {
+                                alert("Registration Completed Successfully")
+                            })
+                    })
+                });
+            }
+            else {
+                this.sendApprove(
+                    deposit,
+                    window.web3.currentProvider.selectedAddress,
+                    nodeRegistryAddr,
+                    erc20Contract).then((res) => {
+
+                        this.sendRegisterNode(
+                            nodeRegistryContract,
+                            url,
+                            props,
+                            this.state.address,
+                            weight,
+                            deposit,
+                            signature,
+                            window.web3.currentProvider.selectedAddress, 
+                            nodeRegistryAddr).then((res) => {
+                                alert("Registration Completed Successfully")
+                            })
+                    })
+            }
+        }).catch(err => alert("Some Error Occured"+ JSON.stringify(err)))
     }
 
     registerin3 = () => {
