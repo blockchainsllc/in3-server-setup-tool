@@ -421,7 +421,7 @@ const SettingsComponent = (props) => {
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
                                 id="deposit"
-                                label="Deposit ( Ethers )"
+                                label="Deposit ( ERC20 )"
                                 className={classes.textField}
                                 value={props.deposit}
                                 onChange={props.handleChange}
