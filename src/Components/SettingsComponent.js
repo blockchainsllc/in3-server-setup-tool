@@ -377,7 +377,7 @@ const SettingsComponent = (props) => {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <Button variant="contained" color="primary" className={classes.button} onClick={props.genConfig}>Generate Config</Button>
+                    <Button variant="contained" color="primary" className={classes.button} onClick={props.genConfig}>Generate Docker Compose</Button>
                 </Grid>
 
             </PaperComponent>

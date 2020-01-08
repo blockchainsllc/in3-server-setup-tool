@@ -107,11 +107,11 @@ const DialogComponent = (props) => {
 
             <Dialog onClose={props.handleChange} aria-labelledby="customized-dialog-title" open={openDialog} maxWidth='lg'>
                 <DialogTitle id="customized-dialog-title" onClose={props.handleChange}>
-                    IN3 Server
+                    IN3 Server Setup Wizard
         </DialogTitle>
                 <DialogContent dividers>
                     <Typography gutterBottom>
-                        Output IN3 Docker
+                        Output IN3 Docker Compose
           </Typography>
 
                     <TextField
@@ -132,7 +132,7 @@ const DialogComponent = (props) => {
           </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={downloadTxtFile}>Download Docker File</Button>
+                    <Button onClick={downloadTxtFile}>Download Docker Compose File</Button>
                     <Button onClick={props.handleChange} color="primary">Close</Button>
                 </DialogActions>
             </Dialog>
