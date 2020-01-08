@@ -47,6 +47,7 @@ import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(theme => ({
 
@@ -386,9 +387,10 @@ const SettingsComponent = (props) => {
 
             <PaperComponent>
                 <Grid container spacing={1}>
-                    <Grid item xs={12}>
+                    <Grid item xs={11}>
                         <Typography variant="body2" color="textSecondary" component="p">Register IN3 Server</Typography>
                     </Grid>
+                    <Grid item xs={1}>{ props.showProgressCircle ?<CircularProgress color="secondary" visible="false"/>: null }</Grid>
 
                     <Grid item xs={12}>
                         <FormControl fullWidth className={classes.margin}>
@@ -412,7 +414,7 @@ const SettingsComponent = (props) => {
                                 value={props.deposit}
                                 onChange={props.handleChange}
                                 variant="outlined"
-                                helperText="DApp will see if you already have ERC20 wei then It will allow Registry contract first and then will register node, else first it will convert Wei to ERC20."
+                                helperText="DApp will see if you already have ERC20 wei then It will approve Registry contract to use those as deposite first and then will register node, else first it will convert Ether Wei to ERC20."
                             />
                         </FormControl>
                     </Grid>
@@ -426,7 +428,7 @@ const SettingsComponent = (props) => {
             </PaperComponent>
 
             <br />
-
+            
         </form>
 
 
