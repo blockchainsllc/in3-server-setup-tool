@@ -62,8 +62,8 @@ export default class SettingsContainer extends Component {
             address: '',
             encprivatekey: '',
             keystorepath: '',
-            keyphrase1: 'e',
-            keyphrase2: 'e',
+            keyphrase1: '',
+            keyphrase2: '',
             keyexported: false,
 
             capproof: true,
@@ -73,10 +73,11 @@ export default class SettingsContainer extends Component {
             caponion: false,
 
             deposit: '10000000000000000',
-            in3nodeurl: 'w.io',
+            in3nodeurl: '',
             outputData: '',
 
-            ethnodeurl: ''
+            ethnodeurl: '',
+            showProgressCircle: false
         }
 
         this.NW = {
@@ -315,7 +316,7 @@ export default class SettingsContainer extends Component {
     }
 
     sendRegTransaction = (web3, window) => {
-
+        //this.state.showProgressCircle = true;
         if (this.state.deposit === "" || (! /^\d*\.?\d*$/.test(this.state.deposit))) {
             alert("Invalid deposit value");
             return;
@@ -338,7 +339,7 @@ export default class SettingsContainer extends Component {
         //     return;
         // }
 
-        const nodeRegistryAddr = "0x4dCA8bCA3bbdA168176440878BBD2691134b4995"//this.state.noderegistry;
+        const nodeRegistryAddr = this.state.noderegistry;
         const nodeRegistryContract = new web3.eth.Contract(NodeRegistry.abi, nodeRegistryAddr);
 
         //const timeout = web3.utils.toHex((parseFloat(this.state.in3timeout) * 60 * 60));
@@ -356,7 +357,7 @@ export default class SettingsContainer extends Component {
         erc20Contract.methods.balanceOf(window.web3.currentProvider.selectedAddress).call().then((balance) => {
 
             if (parseInt(balance) < parseInt(deposit)) {
-                alert("Incificient erc20 funds, first converting " + deposit + " wei to erc20")
+                alert("Insufficient erc20 funds for deposit, first converting " + deposit + " wei to erc20")
 
                 this.mintERC20(
                     erc20Contract,
@@ -413,10 +414,11 @@ export default class SettingsContainer extends Component {
             }
         }).catch(
             err => {
-                alert("Some Error Occured. " + err.message)
+                alert("Some Error Occured. " + JSON.stringify(err))
                 console.log("Some Error Occured." + JSON.stringify(err))
             }
         )
+        //this.state.showProgressCircle=false;
     }
 
     registerin3 = () => {
@@ -509,6 +511,7 @@ export default class SettingsContainer extends Component {
 
                     downloadEncPKFile={this.downloadEncPKFile}
                     ethnodeurl={this.ethnodeurl}
+                    showProgressCircle = {this.state.showProgressCircle}
                 >
                 </SettingsComponent>
 
