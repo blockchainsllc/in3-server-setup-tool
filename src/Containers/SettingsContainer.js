@@ -68,10 +68,11 @@ export default class SettingsContainer extends Component {
             keyexported: false,
 
             capproof: true,
-            capmultichain: false,
-            caphttp: false,
             caparchive: false,
+            caphttp: false,
             caponion: false,
+            capbinary: false,
+            capstats: false,
 
             deposit: '10000000000000000',
             in3nodeurl: 'te.u' + Math.random().toString(36).substring(7),
@@ -367,8 +368,10 @@ export default class SettingsContainer extends Component {
 
         //const timeout = web3.utils.toHex((parseFloat(this.state.in3timeout) * 60 * 60));
         const weight = web3.utils.toHex(1);
-        const props = web3.utils.toHex((this.state.capproof ? 1 : 0) + (this.state.capmultichain ? 2 : 0)
-            + (this.state.caphttp ? 8 : 0) + (this.state.caparchive ? 4 : 0) + (this.state.caponion ? 20 : 0))
+
+        const props = web3.utils.toHex((this.state.capproof ? 1 : 0) + (this.state.caparchive ? 4 : 0)
+                +(this.state.caphttp ? 8 : 0) + (this.state.caponion ? 20 : 0)
+                + (this.state.capbinary ? 10 : 0) + (this.state.capstats ? 100 : 0))
 
         const deposit = this.state.deposit //web3.utils.toHex(Web3.utils.toWei(this.state.deposit, 'ether'));
         const signature = this.signForRegister(url, props, weight, window.web3.currentProvider.selectedAddress, PK);
@@ -549,10 +552,11 @@ export default class SettingsContainer extends Component {
                     keyphrase2={this.state.keyphrase2}
 
                     capproof={this.state.capproof}
-                    capmultichain={this.state.capmultichain}
+                    caparchive={this.state.caparchive}
                     caphttp={this.state.caphttp}
                     caponion={this.state.caponion}
-                    caparchive={this.state.caparchive}
+                    capbinary={this.state.capbinary}
+                    capstats={this.state.capstats}
 
                     deposit={this.state.deposit}
                     in3nodeurl={this.state.in3nodeurl}

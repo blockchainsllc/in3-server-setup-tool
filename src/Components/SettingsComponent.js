@@ -53,8 +53,8 @@ const useStyles = makeStyles(theme => ({
 
     container: {
         flexWrap: 'wrap',
-         justifyContent: 'center',
-         width: '104%'
+        justifyContent: 'center',
+        width: '104%'
     },
     textField: {
         marginLeft: theme.spacing(1),
@@ -265,82 +265,7 @@ const SettingsComponent = (props) => {
                         <Button variant="contained" color="primary" className={classes.button} onClick={props.genPrivateKey} >Generate Private Key</Button>
                     </Grid>
 
-                    <Grid item xs={6}>
-                        <FormControl fullWidth className={classes.margin2} component="fieldset">
-                            <FormLabel component="legend">Node Capabilities</FormLabel>
-                            <FormGroup row>
-
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            id="capproof"
-                                            checked={props.capproof}
-                                            onChange={props.handleChange}
-                                            value="1"
-                                            color="primary"
-                                        />
-                                    }
-                                    label="Proof"
-                                />
-
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            id="capmultichain"
-                                            checked={props.capmultichain}
-                                            onChange={props.handleChange}
-                                            value="2"
-                                            color="primary"
-                                        />
-                                    }
-                                    label="Multichain"
-                                />
-
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            id="caparchive"
-                                            checked={props.caparchive}
-                                            onChange={props.handleChange}
-                                            value="4"
-                                            color="primary"
-                                        />
-                                    }
-                                    label="Archive"
-                                />
-
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            id="caphttp"
-                                            checked={props.caphttp}
-                                            onChange={props.handleChange}
-                                            value="8"
-                                            color="primary"
-                                        />
-                                    }
-                                    label="Http"
-                                />
-
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            id="caponion"
-                                            checked={props.caponion}
-                                            onChange={props.handleChange}
-                                            value="32"
-                                            color="primary"
-                                        />
-                                    }
-                                    label="Onion Routing"
-                                />
-
-                            </FormGroup>
-                            <a href='https://in3.readthedocs.io/en/develop/spec.html#node-structure' target="_blank">Details of node Capabilities</a>
-                        </FormControl>
-                    </Grid>
-
-                    <Grid item xs={4}>
+                    <Grid item xs={10}>
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
                                 id="encprivatekey"
@@ -388,7 +313,7 @@ const SettingsComponent = (props) => {
             <PaperComponent>
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
-                    { props.showProgressBar ? <LinearProgress /> : null }
+                        {props.showProgressBar ? <LinearProgress /> : null}
                         <Typography variant="body2" color="textSecondary" component="p">Register IN3 Server</Typography>
                     </Grid>
 
@@ -405,7 +330,95 @@ const SettingsComponent = (props) => {
                         </FormControl>
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid item xs={8}>
+                        <FormControl fullWidth className={classes.margin2} component="fieldset">
+                            <FormLabel component="legend">Node Capabilities</FormLabel>
+                            <FormGroup row>
+
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="capproof"
+                                            checked={props.capproof}
+                                            onChange={props.handleChange}
+                                            value="1"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Proof"
+                                />
+
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="caparchive"
+                                            checked={props.caparchive}
+                                            onChange={props.handleChange}
+                                            value="4"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Archive"
+                                />
+
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="caphttp"
+                                            checked={props.caphttp}
+                                            onChange={props.handleChange}
+                                            value="8"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Http"
+                                />
+
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="caponion"
+                                            checked={props.caponion}
+                                            onChange={props.handleChange}
+                                            value="32"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Onion Routing"
+                                />
+
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="capbinary"
+                                            checked={props.capbinary}
+                                            onChange={props.handleChange}
+                                            value="32"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Binary Protocol"
+                                />
+
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="capstats"
+                                            checked={props.capstats}
+                                            onChange={props.handleChange}
+                                            value="32"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Statistics"
+                                />
+
+                            </FormGroup>
+                            <a href='https://in3.readthedocs.io/en/develop/spec.html#node-structure' target="_blank">Details of node Capabilities</a>
+                        </FormControl>
+                    </Grid>
+
+                    <Grid item xs={4}>
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
                                 id="deposit"
@@ -414,7 +427,7 @@ const SettingsComponent = (props) => {
                                 value={props.deposit}
                                 onChange={props.handleChange}
                                 variant="outlined"
-                                helperText="DApp will see if you already have ERC20 wei then It will approve Registry contract to use those as deposite first and then will register node, else first it will convert Ether Wei to ERC20."
+                                helperText=""
                             />
                         </FormControl>
                     </Grid>
@@ -428,7 +441,7 @@ const SettingsComponent = (props) => {
             </PaperComponent>
 
             <br />
-            
+
         </form>
 
 
