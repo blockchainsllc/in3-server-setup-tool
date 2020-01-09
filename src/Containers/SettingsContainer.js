@@ -63,8 +63,8 @@ export default class SettingsContainer extends Component {
             address: '',
             encprivatekey: '',
             keystorepath: '',
-            keyphrase1: 's',
-            keyphrase2: 's',
+            keyphrase1: '',
+            keyphrase2: '',
             keyexported: false,
 
             capproof: true,
@@ -75,7 +75,7 @@ export default class SettingsContainer extends Component {
             capstats: false,
 
             deposit: '10000000000000000',
-            in3nodeurl: 'te.u' + Math.random().toString(36).substring(7),
+            in3nodeurl: '',  //Math.random().toString(36).substring(7),
             outputData: '',
 
             ethnodeurl: '',
@@ -363,7 +363,7 @@ export default class SettingsContainer extends Component {
             return;
         }
 
-        const nodeRegistryAddr = '0x4dCA8bCA3bbdA168176440878BBD2691134b4995';//this.state.noderegistry;
+        const nodeRegistryAddr = this.state.noderegistry;
         const nodeRegistryContract = new web3.eth.Contract(NodeRegistry.abi, nodeRegistryAddr);
 
         //const timeout = web3.utils.toHex((parseFloat(this.state.in3timeout) * 60 * 60));
@@ -372,6 +372,8 @@ export default class SettingsContainer extends Component {
         const props = web3.utils.toHex((this.state.capproof ? 1 : 0) + (this.state.caparchive ? 4 : 0)
                 +(this.state.caphttp ? 8 : 0) + (this.state.caponion ? 20 : 0)
                 + (this.state.capbinary ? 10 : 0) + (this.state.capstats ? 100 : 0))
+        
+        //props = (this.state.blockheight * 0x80000000) + props
 
         const deposit = this.state.deposit //web3.utils.toHex(Web3.utils.toWei(this.state.deposit, 'ether'));
         const signature = this.signForRegister(url, props, weight, window.web3.currentProvider.selectedAddress, PK);
