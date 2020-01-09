@@ -36,6 +36,7 @@ import React, { Component } from 'react';
 import SettingsComponent from '../Components/SettingsComponent';
 import ethWallet from 'ethereumjs-wallet';
 import DialogComponent from '../Components/DialogComponent';
+import MessageComponent from '../Components/MessageComponent';
 import defaultConfig from '../defaultConfig';
 import NodeRegistry from '../Contract/NodeRegistry';
 import ERC20 from '../Contract/ERC20Wrapper';
@@ -72,12 +73,15 @@ export default class SettingsContainer extends Component {
             caparchive: false,
             caponion: false,
 
-            deposit: '10000000000000000',
+            deposit: '',
             in3nodeurl: '',
             outputData: '',
 
             ethnodeurl: '',
-            showProgressCircle: false
+            showProgressCircle: false,
+
+            showmessage: false,
+            message: ""
         }
 
         this.NW = {
@@ -85,6 +89,7 @@ export default class SettingsContainer extends Component {
             "Kovan": "0x2a",
             "Goerli": "0x5"
         };
+
     }
 
     handleChange = (e) => {
@@ -109,10 +114,10 @@ export default class SettingsContainer extends Component {
 
     generateConfig = (e) => {
         if (this.state.encprivatekey === "") {
-            alert("First generate and export encrypted private key");
+            this.showMessage("First generate and export encrypted private key");
             return;
         } else if (!this.state.keyexported) {
-            alert("First export encrypted private key.");
+            this.showMessage("First export encrypted private key.");
             return;
         }
 
@@ -192,19 +197,18 @@ export default class SettingsContainer extends Component {
         let newState = Object.assign({}, this.props);
         newState['outputData'] = dockerConf;
         this.setState(newState);
-
     }
 
     generatePrivateKey = (e) => {
         let newState = Object.assign({}, this.props);
 
         if (this.state.keyphrase1 !== this.state.keyphrase2) {
-            alert("Key Pass Phrase doesnt match");
+            this.showMessage("Key Pass Phrase doesnt match");
             newState.keyphrase1 = '';
             newState.keyphrase2 = '';
         }
         else if (this.state.keyphrase1 === '') {
-            alert("Key Phrase cannot be empty");
+            this.showMessage("Key Phrase cannot be empty");
         }
         else {
             const wallet = ethWallet.generate();
@@ -248,8 +252,8 @@ export default class SettingsContainer extends Component {
         return erc20Contract.methods.mint().send({
             from: fromAddr,
             to: erc20Contract.address,
-            value: amount,
-            //gas: '30000'
+            value: amount
+            , gas: '300000'
         }).on('transactionHash', function (hash) {
             console.log("Transaction Hash: " + hash);
         })
@@ -260,22 +264,22 @@ export default class SettingsContainer extends Component {
                 console.log("Receipt: " + JSON.stringify(receipt));
                 return receipt;
             })
-            .on('error', function (err) {
-                console.log(err.message)
-                return err;
-            });
+        // .on('error', function (err) {
+        //     console.log(err.message)
+        //     return err;
+        // });
     }
 
     sendRegisterNode = (registryContract, url, props, signer, weight, deposit, signature, txSender, nodeRegistryAddr) => {
 
         return registryContract.methods
             .registerNodeFor(
-                url, props, signer, weight, deposit, signature.v, signature.r, signature.s)
+                url, props, signer, weight, deposit, signature.v, signature.r , signature.s)
             .send({
                 from: txSender,
                 to: nodeRegistryAddr,
-                value: 0,
-                //gas: '30000'
+                value: 0
+                //,gas: '30000'
             }).on('transactionHash', function (hash) {
                 console.log("Transaction Hash: " + hash);
             })
@@ -284,20 +288,21 @@ export default class SettingsContainer extends Component {
             })
             .on('receipt', function (receipt) {
                 console.log("Receipt: " + JSON.stringify(receipt));
+
                 return receipt
-            })
-            .on('error', function (err) {
-                alert(err)
-                return err
             });
+        // .on('error', function (err) {
+        //     this.showMessage(err)
+        //     return err
+        // });
     }
 
     sendApprove = (amount, fromAddr, toAddr, erc20Contract) => {
         return erc20Contract.methods.approve(toAddr, amount).send({
             from: fromAddr,
             to: erc20Contract.address,
-            value: 0//,
-            //gas: '21000'
+            value: 0
+            //,gas: '30000'
         })
             .on('transactionHash', function (hash) {
                 console.log("Transaction Hash: " + hash);
@@ -308,36 +313,54 @@ export default class SettingsContainer extends Component {
             .on('receipt', function (receipt) {
                 console.log("Receipt: " + JSON.stringify(receipt));
                 return receipt;
-            })
-            .on('error', function (err) {
-                console.log(JSON.stringify(err))
-                return err;
             });
+        // .on('error', function (err) {
+        //     console.log(JSON.stringify(err))
+        //     return err;
+        // });
+    }
+
+    showMessage(str){
+        let newState = Object.assign({}, this.props);
+        newState['message'] = str;
+        newState['showmessage'] = true;
+        this.setState(newState);
+    }
+
+    showProgress(show){
+        let newState = Object.assign({}, this.props);
+        newState['showProgressCircle'] = show;
+        this.setState(newState);
     }
 
     sendRegTransaction = (web3, window) => {
-        //this.state.showProgressCircle = true;
+        this.showProgress(true);
+
         if (this.state.deposit === "" || (! /^\d*\.?\d*$/.test(this.state.deposit))) {
-            alert("Invalid deposit value");
+            this.showMessage("Invalid deposit value");
+            this.showProgress(false);
             return;
         }
 
         const url = this.state.in3nodeurl;
         if (url === "") {
-            alert("IN3 node URL cannot be empty");
+            this.showMessage("IN3 node URL cannot be empty");
+            this.showProgress(false);
             return;
         }
 
         const PK = this.state.privatekey;
         if (PK === '') {
-            alert("First generate private key.");
+            this.showMessage("First generate private key.");
+            this.showProgress(false);
             return;
         }
 
-        // if (!this.state.keyexported) {
-        //     alert("Please export encrypted private key first.");
-        //     return;
-        // }
+        if (!this.state.keyexported) {
+            this.showMessage("Please export encrypted private key first.");
+            this.showProgress(false);
+            return;
+        }
 
         const nodeRegistryAddr = this.state.noderegistry;
         const nodeRegistryContract = new web3.eth.Contract(NodeRegistry.abi, nodeRegistryAddr);
@@ -357,7 +380,7 @@ export default class SettingsContainer extends Component {
         erc20Contract.methods.balanceOf(window.web3.currentProvider.selectedAddress).call().then((balance) => {
 
             if (parseInt(balance) < parseInt(deposit)) {
-                alert("Insufficient erc20 funds for deposit, first converting " + deposit + " wei to erc20")
+                this.showMessage("Insufficient erc20 funds (" + balance + ") for deposit, first converting " + deposit + " wei to erc20")
 
                 this.mintERC20(
                     erc20Contract,
@@ -382,12 +405,18 @@ export default class SettingsContainer extends Component {
                             signature,
                             window.web3.currentProvider.selectedAddress,
                             nodeRegistryAddr).then((res) => {
-                                alert("Registration Completed Successfully")
+                                this.showMessage("Registration Completed Successfully")
                             })
-                    })
+                    }).catch(
+                        err => {
+                            this.showMessage("Some Error Occured. " + err.message);
+                            this.showProgress(false);
+                        }
+                    )
                 }).catch(
                     err => {
-                        alert("Some Error Occured. " + JSON.stringify(err))
+                        this.showMessage("Some Error Occured. " + err.message);
+                        this.showProgress(false);
                     }
                 )
             }
@@ -407,18 +436,32 @@ export default class SettingsContainer extends Component {
                             deposit,
                             signature,
                             window.web3.currentProvider.selectedAddress,
-                            nodeRegistryAddr).then((res) => {
-                                alert("Registration Completed Successfully")
-                            })
-                    })
+                            nodeRegistryAddr)
+                            .then((res) => {
+
+                                this.showMessage("Registration Completed Successfully");
+                                this.showProgress(false);
+
+                            }).catch(
+                                err => {
+                                    this.showMessage("Some Error Occured. " + err.message);
+                                    this.showProgress(false);
+                                })
+
+                    }).catch(
+                        err => {
+                            this.showMessage("Some Error Occured. " + err.message);
+                            this.showProgress(false);
+                        }
+                    )
             }
         }).catch(
             err => {
-                alert("Some Error Occured. " + JSON.stringify(err))
-                console.log("Some Error Occured." + JSON.stringify(err))
+                this.showMessage("Some Error Occured. " + err.message);
+                console.log("Some Error Occured." + JSON.stringify(err));
+                this.showProgress(false);
             }
         )
-        //this.state.showProgressCircle=false;
     }
 
     registerin3 = () => {
@@ -432,7 +475,7 @@ export default class SettingsContainer extends Component {
                 });
             } catch (e) {
                 // User has denied account access to DApp...
-                alert('You Denied MetaMask Access!');
+                this.showMessage('You Denied MetaMask Access!');
             }
         }
         // Legacy DApp Browsers
@@ -442,7 +485,7 @@ export default class SettingsContainer extends Component {
         }
         // Non-DApp Browsers
         else {
-            alert('You have to install MetaMask !');
+            this.showMessage('You have to install MetaMask !');
         }
 
     }
@@ -453,12 +496,19 @@ export default class SettingsContainer extends Component {
         this.setState(newState);
     };
 
+    handleCloseMsg = () => {
+        let newState = Object.assign({}, this.props);
+        newState['message'] = "";
+        newState['showmessage'] = false;
+        this.setState(newState);
+    }
+
     downloadEncPKFile = () => {
         let newState = Object.assign({}, this.props);
         newState.keyexported = false;
 
         if (this.state.encprivatekey === '') {
-            alert("First generate private key.");
+            this.showMessage("First generate private key.");
         }
         else {
             const element = document.createElement("a");
@@ -511,7 +561,7 @@ export default class SettingsContainer extends Component {
 
                     downloadEncPKFile={this.downloadEncPKFile}
                     ethnodeurl={this.ethnodeurl}
-                    showProgressCircle = {this.state.showProgressCircle}
+                    showProgressCircle={this.state.showProgressCircle}
                 >
                 </SettingsComponent>
 
@@ -519,6 +569,10 @@ export default class SettingsContainer extends Component {
                     outputData={this.state.outputData}
                     handleChange={this.handleClose}
                 />
+                <MessageComponent 
+                    show={this.state.showmessage} 
+                    message={this.state.message}
+                    handleClose={this.handleCloseMsg}/>
 
             </div>
         )
