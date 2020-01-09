@@ -6,6 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
+import Box from '@material-ui/core/Box';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -15,25 +16,26 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function MessageComponent(props) {
 
     return (
-        <div>
-            <Dialog
-                open={props.show}
-                TransitionComponent={Transition}
-                keepMounted
-                //onClose={handleClose}
-                aria-labelledby="alert-dialog-slide-title"
-                aria-describedby="alert-dialog-slide-description"
-            >
-                <DialogTitle id="alert-dialog-slide-title">Message</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
-                        {props.message}
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={props.handleClose} color="primary"> ok </Button>
-                </DialogActions>
-            </Dialog>
-        </div>
+        <Box component="span" m={1}>
+            <div>
+                <Dialog
+                    open={props.show}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    //onClose={handleClose}
+                    aria-labelledby="alert-dialog-slide-title"
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogTitle id="alert-dialog-slide-title">Message</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-slide-description">
+                            {props.message}
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={props.handleClose} color="primary"> ok </Button>
+                    </DialogActions>
+                </Dialog>
+            </div></Box>
     );
 }
