@@ -63,8 +63,8 @@ export default class SettingsContainer extends Component {
             address: '',
             encprivatekey: '',
             keystorepath: '',
-            keyphrase1: '',
-            keyphrase2: '',
+            keyphrase1: 's',
+            keyphrase2: 's',
             keyexported: false,
 
             capproof: true,
@@ -73,12 +73,12 @@ export default class SettingsContainer extends Component {
             caparchive: false,
             caponion: false,
 
-            deposit: '',
-            in3nodeurl: '',
+            deposit: '10000000000000000',
+            in3nodeurl: 'te.u' + Math.random().toString(36).substring(7),
             outputData: '',
 
             ethnodeurl: '',
-            showProgressCircle: false,
+            showProgressBar: false,
 
             showmessage: false,
             message: ""
@@ -329,7 +329,7 @@ export default class SettingsContainer extends Component {
 
     showProgress(show){
         let newState = Object.assign({}, this.props);
-        newState['showProgressCircle'] = show;
+        newState['showProgressBar'] = show;
         this.setState(newState);
     }
 
@@ -362,7 +362,7 @@ export default class SettingsContainer extends Component {
             return;
         }
 
-        const nodeRegistryAddr = this.state.noderegistry;
+        const nodeRegistryAddr = '0x4dCA8bCA3bbdA168176440878BBD2691134b4995';//this.state.noderegistry;
         const nodeRegistryContract = new web3.eth.Contract(NodeRegistry.abi, nodeRegistryAddr);
 
         //const timeout = web3.utils.toHex((parseFloat(this.state.in3timeout) * 60 * 60));
@@ -561,7 +561,7 @@ export default class SettingsContainer extends Component {
 
                     downloadEncPKFile={this.downloadEncPKFile}
                     ethnodeurl={this.ethnodeurl}
-                    showProgressCircle={this.state.showProgressCircle}
+                    showProgressBar={this.state.showProgressBar}
                 >
                 </SettingsComponent>
 
