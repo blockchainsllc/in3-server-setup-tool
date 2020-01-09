@@ -390,7 +390,7 @@ const SettingsComponent = (props) => {
                     <Grid item xs={11}>
                         <Typography variant="body2" color="textSecondary" component="p">Register IN3 Server</Typography>
                     </Grid>
-                    <Grid item xs={1}>{ props.showProgressCircle ?<CircularProgress color="secondary" visible="false"/>: null }</Grid>
+                    <Grid item xs={1}>{ props.showProgressCircle ?<CircularProgress color="secondary" visible="true"/>: null }</Grid>
 
                     <Grid item xs={12}>
                         <FormControl fullWidth className={classes.margin}>
