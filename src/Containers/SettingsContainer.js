@@ -57,7 +57,7 @@ export default class SettingsContainer extends Component {
             network: 'Mainnet',
             noderegistry: defaultConfig.servers['0x1'].contract,
             logslevel: 'Info',
-            blockheight: '6',
+            blockheight: '10',
 
             privatekey: '',
             address: '',
