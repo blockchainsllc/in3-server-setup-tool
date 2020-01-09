@@ -47,7 +47,7 @@ import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const useStyles = makeStyles(theme => ({
 
@@ -387,10 +387,10 @@ const SettingsComponent = (props) => {
 
             <PaperComponent>
                 <Grid container spacing={1}>
-                    <Grid item xs={11}>
+                    <Grid item xs={12}>
+                    { props.showProgressBar ? <LinearProgress /> : null }
                         <Typography variant="body2" color="textSecondary" component="p">Register IN3 Server</Typography>
                     </Grid>
-                    <Grid item xs={1}>{ props.showProgressCircle ?<CircularProgress color="secondary" visible="true"/>: null }</Grid>
 
                     <Grid item xs={12}>
                         <FormControl fullWidth className={classes.margin}>
