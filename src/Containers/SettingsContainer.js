@@ -366,14 +366,13 @@ export default class SettingsContainer extends Component {
         const nodeRegistryAddr = this.state.noderegistry;
         const nodeRegistryContract = new web3.eth.Contract(NodeRegistry.abi, nodeRegistryAddr);
 
-        //const timeout = web3.utils.toHex((parseFloat(this.state.in3timeout) * 60 * 60));
         const weight = web3.utils.toHex(1);
 
-        let props = web3.utils.toHex((this.state.capproof ? 1 : 0) + (this.state.caparchive ? 4 : 0)
+        let props = web3.utils.toHex(
+            (((this.state.capproof ? 1 : 0) + (this.state.caparchive ? 4 : 0)
             + (this.state.caphttp ? 8 : 0) + (this.state.caponion ? 20 : 0)
-            + (this.state.capbinary ? 10 : 0) + (this.state.capstats ? 100 : 0))
-
-        props = (props * 0x80000000) + this.state.blockheight
+            + (this.state.capbinary ? 10 : 0) + (this.state.capstats ? 100 : 0)) * 2147483648) 
+            + this.state.blockheight)
 
         const deposit = this.state.deposit //web3.utils.toHex(Web3.utils.toWei(this.state.deposit, 'ether'));
         const signature = this.signForRegister(url, props, weight, window.web3.currentProvider.selectedAddress, PK);
