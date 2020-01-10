@@ -275,7 +275,7 @@ export default class SettingsContainer extends Component {
 
         return registryContract.methods
             .registerNodeFor(
-                url, props, signer, weight, deposit, signature.v, signature.r , signature.s)
+                url, props, signer, weight, deposit, signature.v, signature.r, signature.s)
             .send({
                 from: txSender,
                 to: nodeRegistryAddr,
@@ -321,14 +321,14 @@ export default class SettingsContainer extends Component {
         // });
     }
 
-    showMessage(str){
+    showMessage(str) {
         let newState = Object.assign({}, this.props);
         newState['message'] = str;
         newState['showmessage'] = true;
         this.setState(newState);
     }
 
-    showProgress(show){
+    showProgress(show) {
         let newState = Object.assign({}, this.props);
         newState['showProgressBar'] = show;
         this.setState(newState);
@@ -369,97 +369,104 @@ export default class SettingsContainer extends Component {
         //const timeout = web3.utils.toHex((parseFloat(this.state.in3timeout) * 60 * 60));
         const weight = web3.utils.toHex(1);
 
-        const props = web3.utils.toHex((this.state.capproof ? 1 : 0) + (this.state.caparchive ? 4 : 0)
-                +(this.state.caphttp ? 8 : 0) + (this.state.caponion ? 20 : 0)
-                + (this.state.capbinary ? 10 : 0) + (this.state.capstats ? 100 : 0))
-        
+        let props = web3.utils.toHex((this.state.capproof ? 1 : 0) + (this.state.caparchive ? 4 : 0)
+            + (this.state.caphttp ? 8 : 0) + (this.state.caponion ? 20 : 0)
+            + (this.state.capbinary ? 10 : 0) + (this.state.capstats ? 100 : 0))
+
         props = (props * 0x80000000) + this.state.blockheight
 
         const deposit = this.state.deposit //web3.utils.toHex(Web3.utils.toWei(this.state.deposit, 'ether'));
         const signature = this.signForRegister(url, props, weight, window.web3.currentProvider.selectedAddress, PK);
 
-        //first check erc20 balance
-        const erc20Addr = "0x71357768E92C5178C1f8E69aB841b4ed85225AaD"; // <--- hardcoded for testing now
-        const erc20Contract = new web3.eth.Contract(ERC20.abi, erc20Addr)
+        nodeRegistryContract.methods.supportedToken().call().then((erc20Addr) => {
 
-        erc20Contract.methods.balanceOf(window.web3.currentProvider.selectedAddress).call().then((balance) => {
+            const erc20Contract = new web3.eth.Contract(ERC20.abi, erc20Addr)
 
-            if (parseInt(balance) < parseInt(deposit)) {
-                this.showMessage("Insufficient erc20 funds (" + balance + ") for deposit, first converting " + deposit + " wei to erc20")
+            erc20Contract.methods.balanceOf(window.web3.currentProvider.selectedAddress).call().then((balance) => {
 
-                this.mintERC20(
-                    erc20Contract,
-                    window.web3.currentProvider.selectedAddress,
-                    deposit - balance
-                ).then((res) => {
+                if (parseInt(balance) < parseInt(deposit)) {
+                    this.showMessage("Insufficient erc20 funds (" + balance + ") for deposit, first converting " + deposit + " wei to erc20")
 
+                    this.mintERC20(
+                        erc20Contract,
+                        window.web3.currentProvider.selectedAddress,
+                        deposit - balance
+                    ).then((res) => {
+
+                        this.sendApprove(
+                            deposit,
+                            window.web3.currentProvider.selectedAddress,
+                            nodeRegistryAddr,
+                            erc20Contract
+                        ).then((res) => {
+
+                            this.sendRegisterNode(
+                                nodeRegistryContract,
+                                url,
+                                props,
+                                this.state.address,
+                                weight,
+                                deposit,
+                                signature,
+                                window.web3.currentProvider.selectedAddress,
+                                nodeRegistryAddr).then((res) => {
+                                    this.showMessage("Registration Completed Successfully")
+                                })
+                        }).catch(
+                            err => {
+                                this.showMessage("Some Error Occured. " + err.message);
+                                this.showProgress(false);
+                            }
+                        )
+                    }).catch(
+                        err => {
+                            this.showMessage("Some Error Occured. " + err.message);
+                            this.showProgress(false);
+                        }
+                    )
+                }
+                else {
                     this.sendApprove(
                         deposit,
                         window.web3.currentProvider.selectedAddress,
                         nodeRegistryAddr,
-                        erc20Contract
-                    ).then((res) => {
+                        erc20Contract).then((res) => {
 
-                        this.sendRegisterNode(
-                            nodeRegistryContract,
-                            url,
-                            props,
-                            this.state.address,
-                            weight,
-                            deposit,
-                            signature,
-                            window.web3.currentProvider.selectedAddress,
-                            nodeRegistryAddr).then((res) => {
-                                this.showMessage("Registration Completed Successfully")
-                            })
-                    }).catch(
-                        err => {
-                            this.showMessage("Some Error Occured. " + err.message);
-                            this.showProgress(false);
-                        }
-                    )
-                }).catch(
-                    err => {
-                        this.showMessage("Some Error Occured. " + err.message);
-                        this.showProgress(false);
-                    }
-                )
-            }
-            else {
-                this.sendApprove(
-                    deposit,
-                    window.web3.currentProvider.selectedAddress,
-                    nodeRegistryAddr,
-                    erc20Contract).then((res) => {
+                            this.sendRegisterNode(
+                                nodeRegistryContract,
+                                url,
+                                props,
+                                this.state.address,
+                                weight,
+                                deposit,
+                                signature,
+                                window.web3.currentProvider.selectedAddress,
+                                nodeRegistryAddr)
+                                .then((res) => {
 
-                        this.sendRegisterNode(
-                            nodeRegistryContract,
-                            url,
-                            props,
-                            this.state.address,
-                            weight,
-                            deposit,
-                            signature,
-                            window.web3.currentProvider.selectedAddress,
-                            nodeRegistryAddr)
-                            .then((res) => {
-
-                                this.showMessage("Registration Completed Successfully");
-                                this.showProgress(false);
-
-                            }).catch(
-                                err => {
-                                    this.showMessage("Some Error Occured. " + err.message);
+                                    this.showMessage("Registration Completed Successfully");
                                     this.showProgress(false);
-                                })
 
-                    }).catch(
-                        err => {
-                            this.showMessage("Some Error Occured. " + err.message);
-                            this.showProgress(false);
-                        }
-                    )
-            }
+                                }).catch(
+                                    err => {
+                                        this.showMessage("Some Error Occured. " + err.message);
+                                        this.showProgress(false);
+                                    })
+
+                        }).catch(
+                            err => {
+                                this.showMessage("Some Error Occured. " + err.message);
+                                this.showProgress(false);
+                            }
+                        )
+                }
+            }).catch(
+                err => {
+                    this.showMessage("Some Error Occured. " + err.message);
+                    console.log("Some Error Occured." + JSON.stringify(err));
+                    this.showProgress(false);
+                }
+            )
         }).catch(
             err => {
                 this.showMessage("Some Error Occured. " + err.message);
@@ -575,10 +582,10 @@ export default class SettingsContainer extends Component {
                     outputData={this.state.outputData}
                     handleChange={this.handleClose}
                 />
-                <MessageComponent 
-                    show={this.state.showmessage} 
+                <MessageComponent
+                    show={this.state.showmessage}
                     message={this.state.message}
-                    handleClose={this.handleCloseMsg}/>
+                    handleClose={this.handleCloseMsg} />
 
             </div>
         )
