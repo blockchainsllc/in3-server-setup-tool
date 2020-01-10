@@ -373,7 +373,7 @@ export default class SettingsContainer extends Component {
                 +(this.state.caphttp ? 8 : 0) + (this.state.caponion ? 20 : 0)
                 + (this.state.capbinary ? 10 : 0) + (this.state.capstats ? 100 : 0))
         
-        //props = (this.state.blockheight * 0x80000000) + props
+        props = (props * 0x80000000) + this.state.blockheight
 
         const deposit = this.state.deposit //web3.utils.toHex(Web3.utils.toWei(this.state.deposit, 'ether'));
         const signature = this.signForRegister(url, props, weight, window.web3.currentProvider.selectedAddress, PK);
