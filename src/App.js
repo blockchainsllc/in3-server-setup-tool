@@ -38,7 +38,7 @@ import 'typeface-roboto';
 import AppBarComponent from './Components/AppBarComponent';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
-import SettingsContainer from './Containers/SettingsContainer';
+import MainContainer from './Containers/MainContainer';
 import InfoFancyCardComponent from './Components/InfoFancyCardComponent';
 
 function App() {
@@ -52,7 +52,7 @@ function App() {
           <br />
           <InfoFancyCardComponent></InfoFancyCardComponent>
           <br />
-          <SettingsContainer></SettingsContainer>
+          <MainContainer></MainContainer>
         </Container>
       </React.Fragment>
 
