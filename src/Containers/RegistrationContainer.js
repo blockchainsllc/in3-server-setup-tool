@@ -69,6 +69,7 @@ export default class RegistrationContainer extends Component {
             caponion: false,
             capbinary: false,
             capstats: false,
+            capsigner: false,
 
             deposit: '10000000000000000',
             in3nodeurl: '',  //Math.random().toString(36).substring(7),
@@ -226,7 +227,7 @@ export default class RegistrationContainer extends Component {
             return;
         }
 
-        const nodeRegistryAddr = "0x4dCA8bCA3bbdA168176440878BBD2691134b4995";//this.state.noderegistry;
+        const nodeRegistryAddr = this.state.noderegistry;
         const nodeRegistryContract = new web3.eth.Contract(NodeRegistry.abi, nodeRegistryAddr);
 
         const weight = web3.utils.toHex(1);
@@ -234,7 +235,8 @@ export default class RegistrationContainer extends Component {
         let props = web3.utils.toHex(
             (((this.state.capproof ? 1 : 0) + (this.state.caparchive ? 4 : 0)
                 + (this.state.caphttp ? 8 : 0) + (this.state.caponion ? 20 : 0)
-                + (this.state.capbinary ? 10 : 0) + (this.state.capstats ? 100 : 0)) * 2147483648)
+                + (this.state.capbinary ? 10 : 0) + (this.state.capstats ? 100 : 0) 
+                + (this.state.capsigner ? 40 : 0)) * 2147483648)
             + this.state.blockheight)
 
         const deposit = this.state.deposit //web3.utils.toHex(Web3.utils.toWei(this.state.deposit, 'ether'));
@@ -473,6 +475,7 @@ export default class RegistrationContainer extends Component {
                     caponion={this.state.caponion}
                     capbinary={this.state.capbinary}
                     capstats={this.state.capstats}
+                    capsigner={this.state.capsigner}
 
                     deposit={this.state.deposit}
                     in3nodeurl={this.state.in3nodeurl}
