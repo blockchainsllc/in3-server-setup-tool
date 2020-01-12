@@ -35,7 +35,6 @@
 import React, { Component } from 'react';
 import RegistrationComponent from '../Components/RegistrationComponent';
 import ethWallet from 'ethereumjs-wallet';
-import DialogComponent from '../Components/DialogComponent';
 import MessageComponent from '../Components/MessageComponent';
 import defaultConfig from '../defaultConfig';
 import NodeRegistry from '../Contract/NodeRegistry';
