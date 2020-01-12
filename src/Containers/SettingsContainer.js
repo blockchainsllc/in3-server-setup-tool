@@ -264,7 +264,7 @@ export default class SettingsContainer extends Component {
         let newState = Object.assign({}, this.props);
 
         for (var prop in data) {
-            if (Object.prototype.hasOwnProperty.call(data, prop) && prop!="dataChanged") {
+            if (Object.prototype.hasOwnProperty.call(data, prop) && prop!=="dataChanged") {
                 newState[prop] = data[prop];
             }
         }
