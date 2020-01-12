@@ -38,13 +38,6 @@ import ethWallet from 'ethereumjs-wallet';
 import DialogComponent from '../Components/DialogComponent';
 import MessageComponent from '../Components/MessageComponent';
 import defaultConfig from '../defaultConfig';
-import NodeRegistry from '../Contract/NodeRegistry';
-import ERC20 from '../Contract/ERC20Wrapper';
-import Web3 from 'web3';
-
-const in3Common = require('in3-common');
-const ethUtil = require('ethereumjs-util');
-
 
 export default class SettingsContainer extends Component {
     constructor(props) {
