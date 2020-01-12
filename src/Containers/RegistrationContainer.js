@@ -391,7 +391,7 @@ export default class RegistrationContainer extends Component {
 
         for (var prop in data) {
             console.log("settings" + prop)
-            if (Object.prototype.hasOwnProperty.call(data, prop) && prop != "dataChanged" && hasOwnProperty.call(this.state, [prop])) {
+            if (Object.prototype.hasOwnProperty.call(data, prop) && prop !== "dataChanged" && hasOwnProperty.call(this.state, [prop])) {
                 newState[prop] = data[prop];
 
                 //console.log("settings"+prop)
