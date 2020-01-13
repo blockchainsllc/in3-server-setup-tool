@@ -32,13 +32,36 @@
  * with this program. If not, see <https://www.gnu.org/licenses/>.
  *******************************************************************************/
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import React, { Component } from 'react';
+import MainComponent from '../Components/MainComponent';
+import SettingsContainer from '../Containers/SettingsContainer';
+import RegistrationContainer from '../Containers/RegistrationContainer';
 
-try {
-    ReactDOM.render(<App />, document.getElementById('root'));
-} catch (error) {
-    console.log(error);
+export default class MainContainer extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+          settings: {}
+        }
+    }
+
+    handleSettingsDataChange = (settingsData) => {
+      console.log(settingsData);
+
+      let newState = Object.assign({}, this.props);
+      newState['settings'] = settingsData
+      this.setState(newState);
+    }
+
+    render() {
+        return (
+            <div>
+              <MainComponent>
+                <SettingsContainer dataChanged={this.handleSettingsDataChange} downData={this.state.settings} />
+                <RegistrationContainer downData={this.state.settings}/>
+              </MainComponent>
+            </div>
+        )
+    }
 }

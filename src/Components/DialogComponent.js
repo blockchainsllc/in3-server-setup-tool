@@ -96,7 +96,7 @@ const downloadTxtFile = () => {
 
 const DialogComponent = (props) => {
 
-    var openDialog = ((props.outputData == undefined || props.outputData.length <= 0) ? false : true);
+    var openDialog = ((props.outputData === undefined || props.outputData.length <= 0) ? false : true);
 
     /*const props.handleChange = () => {
         openDialog = false;
@@ -107,11 +107,11 @@ const DialogComponent = (props) => {
 
             <Dialog onClose={props.handleChange} aria-labelledby="customized-dialog-title" open={openDialog} maxWidth='lg'>
                 <DialogTitle id="customized-dialog-title" onClose={props.handleChange}>
-                    IN3 Server
+                    IN3 Server Setup Wizard
         </DialogTitle>
                 <DialogContent dividers>
                     <Typography gutterBottom>
-                        Output IN3 Docker
+                        Output IN3 Docker Compose
           </Typography>
 
                     <TextField
@@ -126,13 +126,13 @@ const DialogComponent = (props) => {
                     />
 
                     <Typography gutterBottom>
-                        Export encrypted private key first on same path where you will export docker-compose.yml .
-                        For more details visit: 
-                        https://in3.readthedocs.io/en/latest/getting_started.html
+                        <b>Make sure you already exported encrypted private key on same path where you will export docker-compose.yml .</b>
+                        <br></br>For more details visit:&nbsp;
+                        <a href="https://in3.readthedocs.io/en/latest/getting_started.html"  target="_blank">https://in3.readthedocs.io/en/latest/getting_started.html</a>
           </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={downloadTxtFile}>Download Docker File</Button>
+                    <Button onClick={downloadTxtFile}>Download Docker Compose File</Button>
                     <Button onClick={props.handleChange} color="primary">Close</Button>
                 </DialogActions>
             </Dialog>

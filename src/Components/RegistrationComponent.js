@@ -44,7 +44,9 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button';
-import MenuItem from '@material-ui/core/MenuItem';
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const useStyles = makeStyles(theme => ({
 
@@ -75,81 +77,19 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-
-
-
-const SettingsComponent = (props) => {
+const RegistrationComponent = (props) => {
 
     const classes = useStyles();
 
     return (
 
         <form className={classes.container} noValidate autoComplete="off">
+         
             <PaperComponent>
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
-                        <Typography variant="body2" color="textSecondary" component="p">Meta data Settings (Optional)</Typography>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                        <FormControl fullWidth className={classes.margin}>
-                            <TextField
-                                id="orgname"
-                                label="Organization Name"
-                                className={classes.textField}
-                                value={props.orgname}
-                                onChange={props.handleChange}
-                                variant="outlined"
-                            />
-                        </FormControl>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                        <FormControl fullWidth className={classes.margin}>
-                            <TextField
-                                id="profileicon"
-                                label="Profile Icon"
-                                className={classes.textField}
-                                value={props.profileicon}
-                                onChange={props.handleChange}
-                                variant="outlined"
-                            />
-                        </FormControl>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                        <FormControl fullWidth className={classes.margin}>
-                            <TextField
-                                id="description"
-                                label="Description"
-                                className={classes.textField}
-                                value={props.description}
-                                onChange={props.handleChange}
-                                variant="outlined"
-                            /></FormControl></Grid>
-
-                    <Grid item xs={6}>
-                        <FormControl fullWidth className={classes.margin}>
-                            <TextField
-                                id="orgurl"
-                                label="Organization URL"
-                                className={classes.textField}
-                                value={props.orgurl}
-                                onChange={props.handleChange}
-                                variant="outlined"
-                            />
-                        </FormControl>
-                    </Grid>
-                </Grid>
-
-            </PaperComponent>
-
-            <br /> <br />
-
-            <PaperComponent>
-                <Grid container spacing={1}>
-                    <Grid item xs={12}>
-                        <Typography variant="body2" color="textSecondary" component="p">Server Settings</Typography>
+                        {props.showProgressBar ? <LinearProgress /> : null}
+                        <Typography variant="body2" color="textSecondary" component="p">Register IN3 Server</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
@@ -193,36 +133,15 @@ const SettingsComponent = (props) => {
                         </FormControl>
                     </Grid>
 
-                    <Grid item xs={6}>
-                        <FormControl fullWidth className={classes.margin} variant="outlined">
-                            <TextField
-                                id='logslevel'
-                                select
-                                label="Logging Level"
-                                className={classes.textField}
-                                value={props.logslevel}
-                                onChange={props.handleChange}
-                                name='logslevel'
-                                variant="outlined"
-                            >
-                                <MenuItem key="Info" value="Info">Info</MenuItem>
-                                <MenuItem key="Debug" value="Debug">Debug</MenuItem>
-                                <MenuItem key="Error" value="Error">Error</MenuItem>
-                            </TextField>
-                        </FormControl>
-                    </Grid>
-
-                    <Grid item xs={6}>
+                    <Grid item xs={12}>
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
-                                id="blockheight"
-                                label="Minimum Block Height"
+                                id="in3nodeurl"
+                                label="IN3 Node URL"
                                 className={classes.textField}
-                                value={props.blockheight}
+                                value={props.in3nodeurl}
                                 onChange={props.handleChange}
-                                margin="normal"
                                 variant="outlined"
-                                helperText="IN3 Server will sign blocks after block height range"
                             />
                         </FormControl>
                     </Grid>
@@ -246,25 +165,6 @@ const SettingsComponent = (props) => {
                     <Grid item xs={4}>
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
-                                id="keyphrase2"
-                                label="Private Key Pass Phrase ( again )"
-                                className={classes.textField}
-                                value={props.keyphrase2}
-                                onChange={props.handleChange}
-                                margin="normal"
-                                variant="outlined"
-                                type="password"
-                            />
-                        </FormControl>
-                    </Grid>
-
-                    <Grid item xs={2}>
-                        <Button variant="contained" color="primary" className={classes.button} onClick={props.genPrivateKey} >Generate Private Key</Button>
-                    </Grid>
-
-                    <Grid item xs={10}>
-                        <FormControl fullWidth className={classes.margin}>
-                            <TextField
                                 id="encprivatekey"
                                 label="Encrypted Private Key"
                                 className={classes.textField}
@@ -272,44 +172,162 @@ const SettingsComponent = (props) => {
                                 onChange={props.handleChange}
                                 margin="normal"
                                 variant="outlined"
+                                InputProps={{
+                                    readOnly: true,
+                                  }}
                             />
                         </FormControl>
                     </Grid>
 
                     <Grid item xs={2}>
-                        <Button variant="contained" color="primary" className={classes.button} onClick={props.downloadEncPKFile} >Export Encrypted Private Key</Button>
+                    <Button variant="contained" color="primary" className={classes.button} component="label" >
+                        <input type="file" name="file" onChange={props.onFileHandler} style={{ display: "none" }}/>
+                        Import Encrypted Private Key</Button>
                     </Grid>
 
                     <Grid item xs={12}>
+                        <FormControl fullWidth className={classes.margin2} component="fieldset">
+                            <FormLabel component="legend">Node Capabilities</FormLabel>
+                            <FormGroup row>
+
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="capproof"
+                                            checked={props.capproof}
+                                            onChange={props.handleChange}
+                                            value="1"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Proof"
+                                />
+
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="caparchive"
+                                            checked={props.caparchive}
+                                            onChange={props.handleChange}
+                                            value="4"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Archive"
+                                />
+
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="caphttp"
+                                            checked={props.caphttp}
+                                            onChange={props.handleChange}
+                                            value="8"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Http"
+                                />
+
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="caponion"
+                                            checked={props.caponion}
+                                            onChange={props.handleChange}
+                                            value="32"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Onion Routing"
+                                />
+
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="capbinary"
+                                            checked={props.capbinary}
+                                            onChange={props.handleChange}
+                                            value="32"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Binary Protocol"
+                                />
+
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="capstats"
+                                            checked={props.capstats}
+                                            onChange={props.handleChange}
+                                            value="32"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Statistics"
+                                />
+
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="capsigner"
+                                            checked={props.capsigner}
+                                            onChange={props.handleChange}
+                                            value="32"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Signer"
+                                />
+
+                            </FormGroup>
+                            <a href='https://in3.readthedocs.io/en/develop/spec.html#node-structure' target="_blank">Details of node Capabilities</a>
+                        </FormControl>
+                    </Grid>
+
+                    <Grid item xs={6}>
                         <FormControl fullWidth className={classes.margin}>
                             <TextField
-                                id="ethnodeurl"
-                                label="Ethereum Node URL ( if you dont want to use parity as service in docker-compose)"
+                                id="deposit"
+                                label="Deposit ( ERC20 ) Wei"
                                 className={classes.textField}
-                                value={props.ethnodeurl}
+                                value={props.deposit}
                                 onChange={props.handleChange}
-                                variant="outlined"></TextField>
+                                variant="outlined"
+                                helperText=""
+                            />
+                        </FormControl>
+                    </Grid>
+
+                    <Grid item xs={6}>
+                        <FormControl fullWidth className={classes.margin}>
+                            <TextField
+                                id="blockheight"
+                                label="Minimum Block Height"
+                                className={classes.textField}
+                                value={props.blockheight}
+                                onChange={props.handleChange}
+                                margin="normal"
+                                variant="outlined"
+                                helperText="IN3 Server will sign blocks after block height range"
+                            />
                         </FormControl>
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Typography variant="body2" color="textSecondary" component="p" className={classes.margin}>If you want to use parity as service in docker-compose and wait for its sync use <b>'docker-compose up incubed-parity'</b> first. Once sync complete then start using 'docker-compose up' or for quick testing you can directly specify parity URL in above text field.</Typography>
+                        <Button variant="contained" color="primary" className={classes.button} onClick={props.registerin3}>Register IN3 Server</Button>
                     </Grid>
 
-
                 </Grid>
-
-                <Grid item xs={12}>
-                    <Button variant="contained" color="primary" className={classes.button} onClick={props.genConfig}>Generate Docker Compose</Button>
-                </Grid>
-
             </PaperComponent>
 
-            <br /> <br />
+            <br />
 
         </form>
+
 
     );
 }
 
-export default SettingsComponent;
+export default RegistrationComponent;
