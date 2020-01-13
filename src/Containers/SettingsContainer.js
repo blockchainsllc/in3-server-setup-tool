@@ -36,14 +36,8 @@ import React, { Component } from 'react';
 import SettingsComponent from '../Components/SettingsComponent';
 import ethWallet from 'ethereumjs-wallet';
 import DialogComponent from '../Components/DialogComponent';
+import MessageComponent from '../Components/MessageComponent';
 import defaultConfig from '../defaultConfig';
-import NodeRegistry from '../Contract/NodeRegistry';
-import path from 'path';
-import Web3 from 'web3';
-
-const in3Common = require('in3-common');
-const ethUtil = require('ethereumjs-util');
-
 
 export default class SettingsContainer extends Component {
     constructor(props) {
@@ -56,7 +50,7 @@ export default class SettingsContainer extends Component {
             network: 'Mainnet',
             noderegistry: defaultConfig.servers['0x1'].contract,
             logslevel: 'Info',
-            blockheight: '6',
+            blockheight: '10',
 
             privatekey: '',
             address: '',
@@ -66,18 +60,13 @@ export default class SettingsContainer extends Component {
             keyphrase2: '',
             keyexported: false,
 
-            capproof: true,
-            capmultichain: false,
-            caphttp: false,
-            caparchive: false,
-            caponion: false,
-
-            deposit: '',
-            in3timeout: '1',
-            in3nodeurl: '',
             outputData: '',
 
-            ethnodeurl: ''
+            ethnodeurl: '',
+            showProgressBar: false,
+
+            showmessage: false,
+            message: ""
         }
 
         this.NW = {
@@ -85,6 +74,7 @@ export default class SettingsContainer extends Component {
             "Kovan": "0x2a",
             "Goerli": "0x5"
         };
+
     }
 
     handleChange = (e) => {
@@ -104,15 +94,15 @@ export default class SettingsContainer extends Component {
             newState[id] = value;
         }
 
-        this.setState(newState);
+        this.setState(newState, () => {this.props.dataChanged(this.state)});
     }
 
     generateConfig = (e) => {
         if (this.state.encprivatekey === "") {
-            alert("First generate and export encrypted private key");
+            this.showMessage("First generate and export encrypted private key");
             return;
         } else if (!this.state.keyexported) {
-            alert("First export encrypted private key.");
+            this.showMessage("First export encrypted private key.");
             return;
         }
 
@@ -125,13 +115,13 @@ export default class SettingsContainer extends Component {
             " \n" +
             "    incubed-server: \n";
 
-            if (this.state.ethnodeurl === '')
-            dockerConf+=
-            "        depends_on: \n" +
-            "            incubed-parity: \n" +
-            "                condition : service_healthy \n";
+        if (this.state.ethnodeurl === '')
+            dockerConf +=
+                "        depends_on: \n" +
+                "            incubed-parity: \n" +
+                "                condition : service_healthy \n";
 
-            dockerConf+=
+        dockerConf +=
             "        image: slockit/in3-node:latest \n" +
             "        volumes: \n" +
             "        - ./:/secure                                                # directory where the private key is stored \n" +
@@ -140,9 +130,9 @@ export default class SettingsContainer extends Component {
             "        command: \n" +
             "        - --privateKey=/secure/" + encPKFileName + "                # internal path to the key \n" +
             "        - --privateKeyPassphrase=" + (this.state.keyphrase1) + "                                # passphrase to unlock the key \n" +
-            "        - --chain=" + this.NW[this.state.network] + "                                              # chain \n" +
-            "        - --rpcUrl=" + (this.state.ethnodeurl === '' ? "http://172.15.0.3:8545" : this.state.ethnodeurl) + "                          # URL of the eth client \n" +
-            "        - --registry=" + this.state.noderegistry + "     #Incubed Registry contract address \n";
+            "        - --chain=" + this.NW[this.state.network] + "                                                # chain \n" +
+            "        - --rpcUrl=" + (this.state.ethnodeurl === '' ? "http://172.15.0.3:8545" : this.state.ethnodeurl) + "                            # URL of the eth client \n" +
+            "        - --registry=" + this.state.noderegistry + "      #Incubed Registry contract address \n";
 
         if (this.state.orgname) dockerConf += "        - --profile-name=" + this.state.orgname + "\n";
         if (this.state.profileicon) dockerConf += "        - --profile-icon=" + this.state.profileicon + "\n";
@@ -191,20 +181,19 @@ export default class SettingsContainer extends Component {
 
         let newState = Object.assign({}, this.props);
         newState['outputData'] = dockerConf;
-        this.setState(newState);
-
+        this.setState(newState, () => {this.props.dataChanged(this.state)});
     }
 
     generatePrivateKey = (e) => {
         let newState = Object.assign({}, this.props);
 
         if (this.state.keyphrase1 !== this.state.keyphrase2) {
-            alert("Key Pass Phrase doesnt match");
+            this.showMessage("Key Pass Phrase doesnt match");
             newState.keyphrase1 = '';
             newState.keyphrase2 = '';
         }
         else if (this.state.keyphrase1 === '') {
-            alert("Key Phrase cannot be empty");
+            this.showMessage("Key Phrase cannot be empty");
         }
         else {
             const wallet = ethWallet.generate();
@@ -217,113 +206,20 @@ export default class SettingsContainer extends Component {
             newState.privatekey = wallet.getPrivateKeyString();
             newState.address = wallet.getAddressString();
         }
+        this.setState(newState, () => {this.props.dataChanged(this.state)});
+    }
+
+    showMessage(str) {
+        let newState = Object.assign({}, this.props);
+        newState['message'] = str;
+        newState['showmessage'] = true;
         this.setState(newState);
     }
 
-    signForRegister = (url, props, timeout, weight, owner, pk) => {
-
-        const msgHash = ethUtil.keccak(
-            Buffer.concat([
-                in3Common.serialize.bytes(url),
-                in3Common.serialize.uint64(props),
-                in3Common.serialize.uint64(timeout),
-                in3Common.serialize.uint64(weight),
-                in3Common.serialize.address(owner)
-            ])
-        )
-        const msgHash2 = ethUtil.keccak(in3Common.util.toHex("\x19Ethereum Signed Message:\n32") + in3Common.util.toHex(msgHash).substr(2))
-        const s = ethUtil.ecsign((msgHash2), in3Common.serialize.bytes32(pk))
-
-        return {
-            ...s,
-            address: in3Common.util.getAddress(pk),
-            msgHash: in3Common.util.toHex(msgHash2, 32),
-            signature: in3Common.util.toHex(s.r) + in3Common.util.toHex(s.s).substr(2) + in3Common.util.toHex(s.v).substr(2),
-            r: in3Common.util.toHex(s.r),
-            s: in3Common.util.toHex(s.s),
-            v: s.v
-        }
-    }
-
-    sendRegTransaction = (web3, window) => {
-        if (this.state.deposit === "" || (! /^\d*\.?\d*$/.test(this.state.deposit))) {
-            alert("Invalid deposit value");
-            return;
-        }
-
-        const url = this.state.in3nodeurl;
-        if (url === "") {
-            alert("IN3 node URL cannot be empty");
-            return;
-        }
-
-        const PK = this.state.privatekey;
-        if (PK === '') {
-            alert("First generate private key.");
-            return;
-        }
-        if (!this.state.keyexported) {
-            alert("Please export encrypted private key first.");
-            return;
-        }
-
-        let nodeRegistryAddr = this.state.noderegistry;
-        let abi = NodeRegistry.abi;
-        let myContract = new web3.eth.Contract(abi, nodeRegistryAddr);
-
-        const timeout = web3.utils.toHex((parseFloat(this.state.in3timeout) * 60 * 60));
-        const weight = web3.utils.toHex(1);
-        const props = web3.utils.toHex((this.state.capproof ? 1 : 0) + (this.state.capmultichain ? 2 : 0)
-            + (this.state.caphttp ? 8 : 0) + (this.state.caparchive ? 4 : 0) + (this.state.caponion ? 32 : 0))
-
-        const deposit = web3.utils.toHex(Web3.utils.toWei(this.state.deposit, 'ether')); //'0x1';
-        const signature = this.signForRegister(url, props, timeout, weight, window.web3.currentProvider.selectedAddress, PK);
-
-        myContract.methods
-            .registerNodeFor(
-                url, props, timeout, this.state.address, weight, signature.v, signature.r, signature.s)
-            .send({
-                from: window.web3.currentProvider.selectedAddress,
-                to: nodeRegistryAddr,
-                value: deposit//,
-                //gas: '30000'
-            }).on('transactionHash', function (hash) {
-                alert("Transaction Hash: " + hash);
-            })
-            /*.on('confirmation', function (confirmationNumber, receipt) {
-                alert("Confirmation Num: "+confirmationNumber + " Receipt: " + receipt)
-
-            })*/
-            .on('receipt', function (receipt) {
-                console.log("Receipt: " + receipt.toString());
-            })
-            .on('error', function (err) { alert(err) });
-    }
-
-    registerin3 = () => {
-        // Modern DApp Browsers
-        if (window.ethereum) {
-            var web3 = new Web3(window.ethereum);
-            try {
-                window.ethereum.enable().then(() => {
-
-                    this.sendRegTransaction(web3, window);
-                });
-            } catch (e) {
-                // User has denied account access to DApp...
-                alert('You Denied MetaMask Access!');
-            }
-        }
-        // Legacy DApp Browsers
-        else if (window.web3) {
-            var web3 = new Web3(window.web3.currentProvider);
-            this.sendRegTransaction(web3, window);
-        }
-        // Non-DApp Browsers
-        else {
-            alert('You have to install MetaMask !');
-        }
-
+    showProgress(show) {
+        let newState = Object.assign({}, this.props);
+        newState['showProgressBar'] = show;
+        this.setState(newState);
     }
 
     handleClose = () => {
@@ -332,12 +228,19 @@ export default class SettingsContainer extends Component {
         this.setState(newState);
     };
 
+    handleCloseMsg = () => {
+        let newState = Object.assign({}, this.props);
+        newState['message'] = "";
+        newState['showmessage'] = false;
+        this.setState(newState);
+    }
+
     downloadEncPKFile = () => {
         let newState = Object.assign({}, this.props);
         newState.keyexported = false;
 
         if (this.state.encprivatekey === '') {
-            alert("First generate private key.");
+            this.showMessage("First generate private key.");
         }
         else {
             const element = document.createElement("a");
@@ -353,7 +256,23 @@ export default class SettingsContainer extends Component {
             newState.keyexported = true;
         }
 
+        this.setState(newState, () => {this.props.dataChanged(this.state)});
+    }
+
+    //retain state on tab coming back
+    setData = (data) => {
+        let newState = Object.assign({}, this.props);
+
+        for (var prop in data) {
+            if (Object.prototype.hasOwnProperty.call(data, prop) && prop!=="dataChanged") {
+                newState[prop] = data[prop];
+            }
+        }
         this.setState(newState);
+    }
+
+    componentDidMount(){
+        this.setData(this.props.downData)
     }
 
     render() {
@@ -377,20 +296,11 @@ export default class SettingsContainer extends Component {
                     keyphrase1={this.state.keyphrase1}
                     keyphrase2={this.state.keyphrase2}
 
-                    capproof={this.state.capproof}
-                    capmultichain={this.state.capmultichain}
-                    caphttp={this.state.caphttp}
-                    caponion={this.state.caponion}
-                    caparchive={this.state.caparchive}
-
-                    deposit={this.state.deposit}
-                    in3timeout={this.state.in3timeout}
-                    in3nodeurl={this.state.in3nodeurl}
-
                     registerin3={this.registerin3}
 
                     downloadEncPKFile={this.downloadEncPKFile}
                     ethnodeurl={this.ethnodeurl}
+                    showProgressBar={this.state.showProgressBar}
                 >
                 </SettingsComponent>
 
@@ -398,6 +308,10 @@ export default class SettingsContainer extends Component {
                     outputData={this.state.outputData}
                     handleChange={this.handleClose}
                 />
+                <MessageComponent
+                    show={this.state.showmessage}
+                    message={this.state.message}
+                    handleClose={this.handleCloseMsg} />
 
             </div>
         )
