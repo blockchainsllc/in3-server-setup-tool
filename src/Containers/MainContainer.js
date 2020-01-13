@@ -47,8 +47,6 @@ export default class MainContainer extends Component {
     }
 
     handleSettingsDataChange = (settingsData) => {
-      console.log(settingsData);
-
       let newState = Object.assign({}, this.props);
       newState['settings'] = settingsData
       this.setState(newState);
