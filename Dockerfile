@@ -17,7 +17,10 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 3000
+FROM nginx:alpine
+# copy the build folder from react to the root of nginx (www)
+COPY --from=build /app/build /usr/share/nginx/html
 
-#RUN npm start
-CMD [ "npm", "start" ]
+EXPOSE 80
+# start nginx 
+CMD ["nginx", "-g", "daemon off;"]
