@@ -80,9 +80,9 @@ export default class RegistrationContainer extends Component {
             caparchive: false,
             caphttp: false,
             caponion: false,
-            capbinary: false,
-            capstats: false,
-            capsigner: false,
+            capbinary: true,
+            capstats: true,
+            capsigner: true,
 
             deposit: '10000000000000000',
             in3nodeurl: '',  //Math.random().toString(36).substring(7),
