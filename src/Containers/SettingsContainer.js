@@ -42,13 +42,26 @@ import defaultConfig from '../defaultConfig';
 export default class SettingsContainer extends Component {
     constructor(props) {
         super(props);
+        
+        this.NW = {
+            "Mainnet": "0x1",
+            "Kovan": "0x2a",
+            "Goerli": "0x5"
+        };
+
+        this.contracts = {
+            "Mainnet": "0x6c095a05764a23156efd9d603eada144a9b1af33",
+            "Kovan": "0xf14d54e349ac971ab6280d6d99f7152c9a06b0b3",
+            "Goerli": "0x635cccc1db6fc9e3b029814720595092affba12f"
+        }
+
         this.state = {
             orgname: '',
             profileicon: '',
             description: '',
             orgurl: '',
             network: 'Mainnet',
-            noderegistry: defaultConfig.servers['0x1'].contract,
+            noderegistry: this.contracts["Mainnet"],//defaultConfig.servers['0x1'].contract,
             logslevel: 'Info',
             blockheight: '10',
 
@@ -69,12 +82,6 @@ export default class SettingsContainer extends Component {
             message: ""
         }
 
-        this.NW = {
-            "Mainnet": "0x1",
-            "Kovan": "0x2a",
-            "Goerli": "0x5"
-        };
-
     }
 
     handleChange = (e) => {
@@ -82,7 +89,7 @@ export default class SettingsContainer extends Component {
         let newState = Object.assign({}, this.props);
 
         if (e.target.name === 'network') {
-            newState["noderegistry"] = defaultConfig.servers[this.NW[value]].contract;
+            newState["noderegistry"] = this.contracts[value]; //defaultConfig.servers[this.NW[value]].contract;
         }
         if (e.target.type === 'radio' || e.target.name === 'logslevel') {
             newState[e.target.name] = value;
