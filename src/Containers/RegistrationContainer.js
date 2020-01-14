@@ -83,6 +83,7 @@ export default class RegistrationContainer extends Component {
             capbinary: true,
             capstats: true,
             capsigner: true,
+            capdata: true,
 
             deposit: '10000000000000000',
             in3nodeurl: '',  //Math.random().toString(36).substring(7),
@@ -262,10 +263,10 @@ export default class RegistrationContainer extends Component {
         let props = web3.utils.toHex(
             (  parseInt( (parseInt(this.state.blockheight,10).toString(2).padEnd(32,'0')) ,2) +
                 
-                ((this.state.capproof ? 1 : 0) + (this.state.caparchive ? 4 : 0)
-                + (this.state.caphttp ? 8 : 0) + (this.state.caponion ? 20 : 0)
-                + (this.state.capbinary ? 10 : 0) + (this.state.capstats ? 100 : 0)
-                + (this.state.capsigner ? 40 : 0)) 
+                ((this.state.capproof ? 1 : 0)      + (this.state.caparchive ? 4 : 0)
+                + (this.state.caphttp ? 8 : 0)      + (this.state.caponion ? 20 : 0)
+                + (this.state.capbinary ? 10 : 0)   + (this.state.capstats ? 100 : 0)
+                + (this.state.capsigner ? 40 : 0)   + (this.state.capdata ? 80 : 0)) 
                 )
             )
 
@@ -503,6 +504,7 @@ export default class RegistrationContainer extends Component {
                     capbinary={this.state.capbinary}
                     capstats={this.state.capstats}
                     capsigner={this.state.capsigner}
+                    capdata={this.state.capdata}
 
                     deposit={this.state.deposit}
                     in3nodeurl={this.state.in3nodeurl}
