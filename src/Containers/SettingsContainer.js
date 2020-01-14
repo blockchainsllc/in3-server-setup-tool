@@ -143,7 +143,7 @@ export default class SettingsContainer extends Component {
             "        volumes: \n" +
             "        - ./:/secure                                                # directory where the private key is stored \n" +
             "        ports: \n" +
-            "        - "+url.port+":8500/tcp                                             # open the port to be accessed by the public \n" +
+            "        - "+(url.port?url.port:'80')+":8500/tcp                                             # open the port to be accessed by the public \n" +
             "        command: \n" +
             "        - --privateKey=/secure/" + encPKFileName + "                # internal path to the key \n" +
             "        - --privateKeyPassphrase=" + (this.state.keyphrase1) + "                                # passphrase to unlock the key \n" +
