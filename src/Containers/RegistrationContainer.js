@@ -259,11 +259,14 @@ export default class RegistrationContainer extends Component {
         const weight = web3.utils.toHex(1);
 
         let props = web3.utils.toHex(
-            (((this.state.capproof ? 1 : 0) + (this.state.caparchive ? 4 : 0)
+            (  parseInt( (parseInt(this.state.blockheight,10).toString(2).padEnd(32,'0')) ,2) +
+                
+                ((this.state.capproof ? 1 : 0) + (this.state.caparchive ? 4 : 0)
                 + (this.state.caphttp ? 8 : 0) + (this.state.caponion ? 20 : 0)
                 + (this.state.capbinary ? 10 : 0) + (this.state.capstats ? 100 : 0)
-                + (this.state.capsigner ? 40 : 0)) * 2147483648)
-            + this.state.blockheight)
+                + (this.state.capsigner ? 40 : 0)) 
+                )
+            )
 
         const deposit = this.state.deposit //web3.utils.toHex(Web3.utils.toWei(this.state.deposit, 'ether'));
         const signature = this.signForRegister(url, props, weight, window.web3.currentProvider.selectedAddress, PK);
