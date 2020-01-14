@@ -240,8 +240,9 @@ export default class RegistrationContainer extends Component {
         }
 
         const url = this.state.in3nodeurl;
-        if (url === "") {
-            this.showMessage("IN3 node URL cannot be empty");
+        try{new URL(url)}
+        catch(err){
+            this.showMessage("Invalid URL given cannot start registration.");
             this.showProgress(false);
             return;
         }

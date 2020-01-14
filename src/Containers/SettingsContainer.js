@@ -76,6 +76,7 @@ export default class SettingsContainer extends Component {
             outputData: '',
 
             ethnodeurl: '',
+            in3nodeurl: '',
             showProgressBar: false,
 
             showmessage: false,
@@ -113,6 +114,15 @@ export default class SettingsContainer extends Component {
             return;
         }
 
+        let url;
+        try {
+            url = new URL(this.state.in3nodeurl);
+        }
+        catch(err){
+            this.showMessage("App cannot generate docker-compose as invalid URL given. ");
+            return;
+        }
+
         const jsonObj = JSON.parse(this.state.encprivatekey);
         const encPKFileName = jsonObj.address + ".json";
 
@@ -133,7 +143,7 @@ export default class SettingsContainer extends Component {
             "        volumes: \n" +
             "        - ./:/secure                                                # directory where the private key is stored \n" +
             "        ports: \n" +
-            "        - 8500:8500/tcp                                             # open the port 8500 to be accessed by the public \n" +
+            "        - "+url.port+":8500/tcp                                             # open the port to be accessed by the public \n" +
             "        command: \n" +
             "        - --privateKey=/secure/" + encPKFileName + "                # internal path to the key \n" +
             "        - --privateKeyPassphrase=" + (this.state.keyphrase1) + "                                # passphrase to unlock the key \n" +
@@ -302,6 +312,7 @@ export default class SettingsContainer extends Component {
                     keystorepath={this.state.keystorepath}
                     keyphrase1={this.state.keyphrase1}
                     keyphrase2={this.state.keyphrase2}
+                    in3nodeurl={this.state.in3nodeurl}
 
                     registerin3={this.registerin3}
 
