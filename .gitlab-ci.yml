@@ -25,12 +25,12 @@ package-docker:
   stage: deploy
   tags:
     - short-jobs
-    only:
+  only:
       - /^v[0-9]+.[0-9]+.[0-9]+(\-RC[0-9]+)?$/
-    except:
+  except:
       - branches
-    when: manual
-    allow_failure: false
+  when: manual
+  allow_failure: false
   image: docker.slock.it/build-images/deployment
   services:
     - docker:dind
