@@ -270,7 +270,7 @@ export default class RegistrationContainer extends Component {
                 .padStart(32,'0')) 
             ,2));
 
-        const deposit = this.state.deposit //web3.utils.toHex(Web3.utils.toWei(this.state.deposit, 'ether'));
+        const deposit = this.state.deposit; //web3.utils.toHex(Web3.utils.toWei(this.state.deposit, 'ether'));
         const signature = this.signForRegister(url, props, weight, window.web3.currentProvider.selectedAddress, PK);
 
         nodeRegistryContract.methods.supportedToken().call().then((erc20Addr) => {
