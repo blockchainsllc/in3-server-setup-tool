@@ -169,7 +169,6 @@ export default class SettingsContainer extends Component {
                 "        command:  \n" +
                 "        - --auto-update=none                                        # do not automatically update the client \n" +
                 "        - --pruning=" + (this.state.caparchive ? "archive" : "auto") + " \n" +
-                "        - --pruning-memory=30000                                    # limit storage \n" +
                 "        - --chain=" + this.state.network.toLowerCase() + " \n" +
                 "        - --jsonrpc-interface=172.15.0.3 \n" +
                 "        - --jsonrpc-port=8545 \n" +
