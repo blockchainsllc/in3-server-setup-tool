@@ -181,6 +181,8 @@ export default class SettingsContainer extends Component {
                 "        ports: \n" +
                 "        - 8545:8545 \n" +
                 "        - 8546:8546 \n" +
+                "        - 30303:30303 \n"+
+                "        - 30303:30303/udp \n"+
                 "        healthcheck: \n" +
                 "            test: [\"CMD-SHELL\", \"curl --data '{\\\"method\\\":\\\"eth_blockNumber\\\",\\\"params\\\":[],\\\"id\\\":1,\\\"jsonrpc\\\":\\\"2.0\\\"}' -H 'Content-Type: application/json' -X POST http://172.15.0.3:8545\"] \n" +
                 "            interval: 10s \n" +
