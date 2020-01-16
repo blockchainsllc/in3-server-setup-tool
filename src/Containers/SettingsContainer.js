@@ -176,6 +176,8 @@ export default class SettingsContainer extends Component {
                 "        - --ws-interface=172.15.0.3 \n" +
                 "        - --ws-port=8546 \n" +
                 "        - --jsonrpc-experimental \n" +
+                "        volumes: \n"+
+                "        - ./chaindata:/home/parity/.local/share/io.parity.ethereum/ \n"+
                 "        ports: \n" +
                 "        - 8545:8545 \n" +
                 "        - 8546:8546 \n" +
