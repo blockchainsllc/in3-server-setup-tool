@@ -172,14 +172,11 @@ export default class SettingsContainer extends Component {
                 "        - --chain=" + this.state.network.toLowerCase() + " \n" +
                 "        - --jsonrpc-interface=172.15.0.3 \n" +
                 "        - --jsonrpc-port=8545 \n" +
-                "        - --ws-interface=172.15.0.3 \n" +
-                "        - --ws-port=8546 \n" +
                 "        - --jsonrpc-experimental \n" +
                 "        volumes: \n"+
                 "        - ./chaindata:/home/parity/.local/share/io.parity.ethereum/ \n"+
                 "        ports: \n" +
                 "        - 8545:8545 \n" +
-                "        - 8546:8546 \n" +
                 "        - 30303:30303 \n"+
                 "        - 30303:30303/udp \n"+
                 "        healthcheck: \n" +
