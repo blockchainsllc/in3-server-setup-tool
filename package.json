@@ -5,9 +5,10 @@
   "dependencies": {
     "@material-ui/core": "^4.8.3",
     "@material-ui/icons": "^4.4.3",
+    "@material-ui/lab": "^4.0.0-alpha.39",
     "ethereumjs-util": "^6.1.0",
     "ethereumjs-wallet": "^0.6.3",
-    "in3-common": "2.0.3-RC1",
+    "in3-common": "2.0.7-RC3",
     "path": "^0.12.7",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",

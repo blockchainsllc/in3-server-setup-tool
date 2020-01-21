@@ -39,7 +39,9 @@ import MessageComponent from '../Components/MessageComponent';
 import defaultConfig from '../defaultConfig';
 import NodeRegistry from '../Contract/NodeRegistry';
 import ERC20 from '../Contract/ERC20Wrapper';
+import wETH from '../Contract/wETH';
 import Web3 from 'web3';
+import { padStart } from 'in3-common/js/src/util/util';
 
 const in3Common = require('in3-common');
 const ethUtil = require('ethereumjs-util');
@@ -48,10 +50,23 @@ const ethUtil = require('ethereumjs-util');
 export default class RegistrationContainer extends Component {
     constructor(props) {
         super(props);
+
+        this.NW = {
+            "Mainnet": "0x1",
+            "Kovan": "0x2a",
+            "Goerli": "0x5"
+        };
+
+        this.contracts = {
+            "Mainnet": "0x6c095a05764a23156efd9d603eada144a9b1af33",
+            "Kovan": "0xf14d54e349ac971ab6280d6d99f7152c9a06b0b3",
+            "Goerli": "0x635cccc1db6fc9e3b029814720595092affba12f"
+        }
+
         this.state = {
 
             network: 'Mainnet',
-            noderegistry: defaultConfig.servers['0x1'].contract,
+            noderegistry: this.contracts["Mainnet"],//defaultConfig.servers['0x1'].contract,
             blockheight: '10',
 
             privatekey: '',
@@ -66,9 +81,10 @@ export default class RegistrationContainer extends Component {
             caparchive: false,
             caphttp: false,
             caponion: false,
-            capbinary: false,
-            capstats: false,
-            capsigner: false,
+            capbinary: true,
+            capstats: true,
+            capsigner: true,
+            capdata: true,
 
             deposit: '10000000000000000',
             in3nodeurl: '',  //Math.random().toString(36).substring(7),
@@ -79,12 +95,6 @@ export default class RegistrationContainer extends Component {
             message: ""
         }
 
-        this.NW = {
-            "Mainnet": "0x1",
-            "Kovan": "0x2a",
-            "Goerli": "0x5"
-        };
-
     }
 
     handleChange = (e) => {
@@ -92,7 +102,7 @@ export default class RegistrationContainer extends Component {
         let newState = Object.assign({}, this.props);
 
         if (e.target.name === 'network') {
-            newState["noderegistry"] = defaultConfig.servers[this.NW[value]].contract;
+            newState["noderegistry"] = this.contracts[value]; //defaultConfig.servers[this.NW[value]].contract;
         }
         if (e.target.type === 'radio' || e.target.name === 'logslevel') {
             newState[e.target.name] = value;
@@ -132,21 +142,40 @@ export default class RegistrationContainer extends Component {
     }
 
     mintERC20 = (erc20Contract, fromAddr, amount) => {
-        return erc20Contract.methods.mint().send({
-            from: fromAddr,
-            to: erc20Contract.address,
-            value: amount
-            , gas: '300000'
-        }).on('transactionHash', function (hash) {
-            console.log("Transaction Hash: " + hash);
-        })
-            .on('confirmation', function (confirmationNumber, receipt) {
-                console.log("Confirmation Num: " + JSON.stringify(confirmationNumber) + " Receipt: " + receipt)
+        if (this.state.network === "Mainnet") {
+            return erc20Contract.methods.deposit().send({
+                from: fromAddr,
+                to: erc20Contract.address,
+                value: amount
+                , gas: '300000'
+            }).on('transactionHash', function (hash) {
+                console.log("Transaction Hash: " + hash);
             })
-            .on('receipt', function (receipt) {
-                console.log("Receipt: " + JSON.stringify(receipt));
-                return receipt;
+                .on('confirmation', function (confirmationNumber, receipt) {
+                    console.log("Confirmation Num: " + JSON.stringify(confirmationNumber) + " Receipt: " + receipt)
+                })
+                .on('receipt', function (receipt) {
+                    console.log("Receipt: " + JSON.stringify(receipt));
+                    return receipt;
+                });
+        }
+        else {
+            return erc20Contract.methods.mint().send({
+                from: fromAddr,
+                to: erc20Contract.address,
+                value: amount
+                , gas: '300000'
+            }).on('transactionHash', function (hash) {
+                console.log("Transaction Hash: " + hash);
             })
+                .on('confirmation', function (confirmationNumber, receipt) {
+                    console.log("Confirmation Num: " + JSON.stringify(confirmationNumber) + " Receipt: " + receipt)
+                })
+                .on('receipt', function (receipt) {
+                    console.log("Receipt: " + JSON.stringify(receipt));
+                    return receipt;
+                });
+        }
         // .on('error', function (err) {
         //     console.log(err.message)
         //     return err;
@@ -213,8 +242,9 @@ export default class RegistrationContainer extends Component {
         }
 
         const url = this.state.in3nodeurl;
-        if (url === "") {
-            this.showMessage("IN3 node URL cannot be empty");
+        try{new URL(url)}
+        catch(err){
+            this.showMessage("Invalid URL given cannot start registration.");
             this.showProgress(false);
             return;
         }
@@ -232,18 +262,20 @@ export default class RegistrationContainer extends Component {
         const weight = web3.utils.toHex(1);
 
         let props = web3.utils.toHex(
-            (((this.state.capproof ? 1 : 0) + (this.state.caparchive ? 4 : 0)
-                + (this.state.caphttp ? 8 : 0) + (this.state.caponion ? 20 : 0)
-                + (this.state.capbinary ? 10 : 0) + (this.state.capstats ? 100 : 0) 
-                + (this.state.capsigner ? 40 : 0)) * 2147483648)
-            + this.state.blockheight)
+            parseInt(
+                ((parseInt(this.state.blockheight,10).toString(2)) + 
+                ((this.state.capstats ? '1' : '0') + (this.state.capdata ? '1' : '0') + (this.state.capsigner ? '1' : '0')
+                    + (this.state.caponion ? '1' : '0') + (this.state.capbinary ? '1':'0') + (this.state.caphttp ? '1' : '0') +
+                    (this.state.caparchive ? '1' : '0') + '0' + (this.state.capproof ? '1' : '0'))
+                .padStart(32,'0')) 
+            ,2));
 
-        const deposit = this.state.deposit //web3.utils.toHex(Web3.utils.toWei(this.state.deposit, 'ether'));
+        const deposit = this.state.deposit; //web3.utils.toHex(Web3.utils.toWei(this.state.deposit, 'ether'));
         const signature = this.signForRegister(url, props, weight, window.web3.currentProvider.selectedAddress, PK);
 
         nodeRegistryContract.methods.supportedToken().call().then((erc20Addr) => {
 
-            const erc20Contract = new web3.eth.Contract(ERC20.abi, erc20Addr)
+            const erc20Contract = new web3.eth.Contract(this.state.network === "Mainnet" ? wETH.abi : ERC20.abi, erc20Addr);
 
             erc20Contract.methods.balanceOf(window.web3.currentProvider.selectedAddress).call().then((balance) => {
 
@@ -274,6 +306,7 @@ export default class RegistrationContainer extends Component {
                                 window.web3.currentProvider.selectedAddress,
                                 nodeRegistryAddr).then((res) => {
                                     this.showMessage("Registration Completed Successfully")
+                                    this.showProgress(false);
                                 })
                         }).catch(
                             err => {
@@ -390,11 +423,8 @@ export default class RegistrationContainer extends Component {
         let newState = Object.assign({}, this.props);
 
         for (var prop in data) {
-            console.log("settings" + prop)
             if (Object.prototype.hasOwnProperty.call(data, prop) && prop !== "dataChanged" && hasOwnProperty.call(this.state, [prop])) {
                 newState[prop] = data[prop];
-
-                //console.log("settings"+prop)
             }
         }
         this.setState(newState);
@@ -402,17 +432,15 @@ export default class RegistrationContainer extends Component {
 
     componentDidMount() {
         this.setData(this.props.downData)
-        console.log("reg down data")
-        console.log(this.props.downData)
     }
 
     handleFile = (e) => {
         const content = e.target.result;
         this.decryptandLoadPK(content);
-      }
+    }
 
     onFileHandler = event => {
-        
+
         if (this.state.keyphrase1 === "") {
             this.showMessage("Invalid Pass Phrase!");
             return;
@@ -437,11 +465,12 @@ export default class RegistrationContainer extends Component {
         let newState = Object.assign({}, this.props);
 
         var wallet;
-        try{
-            wallet = ethWallet.fromV3(data, this.state.keyphrase1);}
-        catch(e){
-            this.showMessage("Some error occured! "+e.message);
-            console.log("err"+e.message)
+        try {
+            wallet = ethWallet.fromV3(data, this.state.keyphrase1);
+        }
+        catch (e) {
+            this.showMessage("Some error occured! " + e.message);
+            console.log("err" + e.message)
             return;
         }
 
@@ -449,7 +478,7 @@ export default class RegistrationContainer extends Component {
 
         newState.privatekey = wallet.getPrivateKeyString();
         newState.address = wallet.getAddressString();
-    
+
         this.setState(newState);
 
     }
@@ -475,6 +504,7 @@ export default class RegistrationContainer extends Component {
                     capbinary={this.state.capbinary}
                     capstats={this.state.capstats}
                     capsigner={this.state.capsigner}
+                    capdata={this.state.capdata}
 
                     deposit={this.state.deposit}
                     in3nodeurl={this.state.in3nodeurl}

@@ -6,18 +6,21 @@ WORKDIR /app
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
-COPY package*.json ./
+#COPY package*.json ./
+
+# Bundle app source
+COPY . /app
 
 RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production
 
-# Bundle app source
-COPY . .
-
 RUN npm run build
 
-EXPOSE 3000
+FROM nginx:alpine
+# copy the build folder from react to the root of nginx (www)
+COPY --from=build /app/build /usr/share/nginx/html
 
-#RUN npm start
-CMD [ "npm", "start" ]
+EXPOSE 80
+# start nginx 
+CMD ["nginx", "-g", "daemon off;"]

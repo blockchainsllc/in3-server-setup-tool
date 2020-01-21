@@ -281,6 +281,19 @@ const RegistrationComponent = (props) => {
                                     label="Signer"
                                 />
 
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            id="capdata"
+                                            checked={props.capdata}
+                                            onChange={props.handleChange}
+                                            value="32"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Data Node"
+                                />
+
                             </FormGroup>
                             <a href='https://in3.readthedocs.io/en/develop/spec.html#node-structure' target="_blank">Details of node Capabilities</a>
                         </FormControl>

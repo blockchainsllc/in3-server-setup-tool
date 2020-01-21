@@ -193,6 +193,19 @@ const SettingsComponent = (props) => {
                         </FormControl>
                     </Grid>
 
+                    <Grid item xs={12}>
+                        <FormControl fullWidth className={classes.margin}>
+                            <TextField
+                                id="in3nodeurl"
+                                label="IN3 Node URL"
+                                className={classes.textField}
+                                value={props.in3nodeurl}
+                                onChange={props.handleChange}
+                                variant="outlined"
+                            />
+                        </FormControl>
+                    </Grid>
+
                     <Grid item xs={6}>
                         <FormControl fullWidth className={classes.margin} variant="outlined">
                             <TextField

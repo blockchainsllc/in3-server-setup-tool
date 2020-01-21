@@ -43,6 +43,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import Alert from '@material-ui/lab/Alert';
 
 
 const styles = theme => ({
@@ -56,6 +57,7 @@ const styles = theme => ({
         top: theme.spacing(1),
         color: theme.palette.grey[500],
     },
+
 });
 
 const DialogTitle = withStyles(styles)(props => {
@@ -126,9 +128,11 @@ const DialogComponent = (props) => {
                     />
 
                     <Typography gutterBottom>
-                        <b>Make sure you already exported encrypted private key on same path where you will export docker-compose.yml .</b>
-                        <br></br>For more details visit:&nbsp;
-                        <a href="https://in3.readthedocs.io/en/latest/getting_started.html"  target="_blank">https://in3.readthedocs.io/en/latest/getting_started.html</a>
+
+                    <Alert severity="info" fullWidth>Make sure you already exported encrypted private key and created 'chaindata' dir on same path where you will export docker-compose.yml</Alert>
+                    <Alert severity="info" fullWidth>Also make sure you give required rights for using 'chaindata' dir by 'chmod a+rwx -R chaindata'. </Alert>
+                    <br></br>For more details visit:&nbsp;
+                    <a href="https://in3.readthedocs.io/en/latest/getting_started.html"  target="_blank">https://in3.readthedocs.io/en/latest/getting_started.html</a>
           </Typography>
                 </DialogContent>
                 <DialogActions>
