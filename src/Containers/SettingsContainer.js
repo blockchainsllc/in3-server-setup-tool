@@ -148,7 +148,7 @@ export default class SettingsContainer extends Component {
             "        - --privateKey=/secure/" + encPKFileName + "                # internal path to the key \n" +
             "        - --privateKeyPassphrase=" + (this.state.keyphrase1) + "                                # passphrase to unlock the key \n" +
             "        - --chain=" + this.NW[this.state.network] + "                                                # chain \n" +
-            "        - --rpcUrl=" + (this.state.ethnodeurl === '' ? "http://172.15.0.3:8545" : this.state.ethnodeurl) + "                            # URL of the eth client \n" +
+            "        - --rpcUrl=" + (this.state.ethnodeurl === '' ? "http://192.168.1.3:8545" : this.state.ethnodeurl) + "                            # URL of the eth client \n" +
             "        - --registry=" + this.state.noderegistry + "      #Incubed Registry contract address \n";
 
         if (this.state.orgname) dockerConf += "        - --profile-name=" + this.state.orgname + "\n";
@@ -162,7 +162,7 @@ export default class SettingsContainer extends Component {
             dockerConf +=
                 "        networks: \n" +
                 "            incubed_net: \n" +
-                "               ipv4_address: '172.15.0.2' \n" +
+                "               ipv4_address: '192.168.1.2' \n" +
                 " \n" +
                 "    incubed-parity:  \n" +
                 "        image:  parity/parity:stable                                 \n" +
@@ -170,7 +170,7 @@ export default class SettingsContainer extends Component {
                 "        - --auto-update=none                                        # do not automatically update the client \n" +
                 "        - --pruning=" + (this.state.caparchive ? "archive" : "auto") + " \n" +
                 "        - --chain=" + this.state.network.toLowerCase() + " \n" +
-                "        - --jsonrpc-interface=172.15.0.3 \n" +
+                "        - --jsonrpc-interface=192.168.1.3 \n" +
                 "        - --jsonrpc-port=8545 \n" +
                 "        - --jsonrpc-experimental \n" +
                 "        - --no-warp \n" +
@@ -181,13 +181,13 @@ export default class SettingsContainer extends Component {
                 "        - 30303:30303 \n"+
                 "        - 30303:30303/udp \n"+
                 "        healthcheck: \n" +
-                "            test: [\"CMD-SHELL\", \"curl --data '{\\\"method\\\":\\\"eth_blockNumber\\\",\\\"params\\\":[],\\\"id\\\":1,\\\"jsonrpc\\\":\\\"2.0\\\"}' -H 'Content-Type: application/json' -X POST http://172.15.0.3:8545\"] \n" +
+                "            test: [\"CMD-SHELL\", \"curl --data '{\\\"method\\\":\\\"eth_blockNumber\\\",\\\"params\\\":[],\\\"id\\\":1,\\\"jsonrpc\\\":\\\"2.0\\\"}' -H 'Content-Type: application/json' -X POST http://192.168.1.3:8545\"] \n" +
                 "            interval: 10s \n" +
                 "            timeout: 10s \n" +
                 "            retries: 5 \n" +
                 "        networks: \n" +
                 "            incubed_net: \n" +
-                "                ipv4_address: '172.15.0.3' \n" +
+                "                ipv4_address: '192.168.1.3' \n" +
                 "  \n" +
                 "networks: \n" +
                 "    incubed_net: \n" +
@@ -195,7 +195,7 @@ export default class SettingsContainer extends Component {
                 "        ipam: \n" +
                 "            driver: default \n" +
                 "            config: \n" +
-                "            - subnet: 172.15.0.0/16 \n";
+                "            - subnet: 192.168.1.0/20 \n";
 
         let newState = Object.assign({}, this.props);
         newState['outputData'] = dockerConf;
