@@ -173,6 +173,7 @@ export default class SettingsContainer extends Component {
                 "        - --jsonrpc-interface=172.15.0.3 \n" +
                 "        - --jsonrpc-port=8545 \n" +
                 "        - --jsonrpc-experimental \n" +
+                "        - --no-warp \n" +
                 "        volumes: \n"+
                 "        - ./chaindata:/home/parity/.local/share/io.parity.ethereum/ \n"+
                 "        ports: \n" +
