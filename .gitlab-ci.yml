@@ -4,6 +4,7 @@ variables:
   RELEASE_IMAGE_TAG: $CI_REGISTRY_IMAGE:latest
 stages:
   - package
+  - analysis
   - deploy
 
 package-docker:
@@ -19,6 +20,25 @@ package-docker:
     - docker tag $COMMIT_IMAGE_TAG $RELEASE_IMAGE_TAG
     - docker push $RELEASE_IMAGE_TAG
     - docker push $COMMIT_IMAGE_TAG
+
+
+vulnerabilities:
+  stage: analysis
+  tags:
+    - short-jobs
+  dependencies:
+    - package-docker
+  allow_failure: true
+  image: docker.slock.it/build-images/vulnerability-testing-tools
+  script:
+    - export TRIVY_AUTH_URL=$CI_REGISTRY
+    - export TRIVY_USERNAME=gitlab-ci-token
+    - export TRIVY_PASSWORD=$CI_JOB_TOKEN
+    - trivy -f json -o vulnerability_analysis.json --exit-code 1 $COMMIT_IMAGE_TAG
+  artifacts:
+    when: on_failure
+    paths:
+    - vulnerability_analysis.json
 
 # Deployment template
 .deploy-tmpl:
