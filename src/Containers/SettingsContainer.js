@@ -166,6 +166,7 @@ export default class SettingsContainer extends Component {
                 " \n" +
                 "    incubed-parity:  \n" +
                 "        image:  parity/parity:stable                                 \n" +
+                "        restart: always \n" +
                 "        command:  \n" +
                 "        - --auto-update=none                                        # do not automatically update the client \n" +
                 "        - --pruning=" + (this.state.caparchive ? "archive" : "auto") + " \n" +
