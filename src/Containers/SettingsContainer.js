@@ -140,6 +140,7 @@ export default class SettingsContainer extends Component {
 
         dockerConf +=
             "        image: slockit/in3-node:latest \n" +
+            "        restart: always \n" +
             "        volumes: \n" +
             "        - ./:/secure                                                # directory where the private key is stored \n" +
             "        ports: \n" +
@@ -149,7 +150,8 @@ export default class SettingsContainer extends Component {
             "        - --privateKeyPassphrase=" + (this.state.keyphrase1.split("$").join("$$")) + "                                # passphrase to unlock the key. " + (this.state.keyphrase1.indexOf('$') != -1 ? "Passphrase in this docker compose file is escaped. \n":"\n" ) +
             "        - --chain=" + this.NW[this.state.network] + "                                                # chain \n" +
             "        - --rpcUrl=" + (this.state.ethnodeurl === '' ? "http://192.168.1.3:8545" : this.state.ethnodeurl) + "                            # URL of the eth client \n" +
-            "        - --registry=" + this.state.noderegistry + "      #Incubed Registry contract address \n";
+            "        - --registry=" + this.state.noderegistry + "      #Incubed Registry contract address \n" +
+            "        - --watchBlockTimeout=180000 \n";
 
         if (this.state.orgname) dockerConf += "        - --profile-name=" + this.state.orgname + "\n";
         if (this.state.profileicon) dockerConf += "        - --profile-icon=" + this.state.profileicon + "\n";
