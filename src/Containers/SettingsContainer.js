@@ -140,6 +140,7 @@ export default class SettingsContainer extends Component {
 
         dockerConf +=
             "        image: slockit/in3-node:latest \n" +
+            "        restart: always \n" +
             "        volumes: \n" +
             "        - ./:/secure                                                # directory where the private key is stored \n" +
             "        ports: \n" +
@@ -149,7 +150,8 @@ export default class SettingsContainer extends Component {
             "        - --privateKeyPassphrase=" + (this.state.keyphrase1.split("$").join("$$")) + "                                # passphrase to unlock the key. " + (this.state.keyphrase1.indexOf('$') != -1 ? "Passphrase in this docker compose file is escaped. \n":"\n" ) +
             "        - --chain=" + this.NW[this.state.network] + "                                                # chain \n" +
             "        - --rpcUrl=" + (this.state.ethnodeurl === '' ? "http://192.168.1.3:8545" : this.state.ethnodeurl) + "                            # URL of the eth client \n" +
-            "        - --registry=" + this.state.noderegistry + "      #Incubed Registry contract address \n";
+            "        - --registry=" + this.state.noderegistry + "      #Incubed Registry contract address \n" +
+            "        - --watchBlockTimeout=180000 \n";
 
         if (this.state.orgname) dockerConf += "        - --profile-name=" + this.state.orgname + "\n";
         if (this.state.profileicon) dockerConf += "        - --profile-icon=" + this.state.profileicon + "\n";
@@ -166,6 +168,7 @@ export default class SettingsContainer extends Component {
                 " \n" +
                 "    incubed-parity:  \n" +
                 "        image:  parity/parity:stable                                 \n" +
+                "        restart: always \n" +
                 "        command:  \n" +
                 "        - --auto-update=none                                        # do not automatically update the client \n" +
                 "        - --pruning=" + (this.state.caparchive ? "archive" : "auto") + " \n" +
@@ -173,6 +176,7 @@ export default class SettingsContainer extends Component {
                 "        - --jsonrpc-interface=192.168.1.3 \n" +
                 "        - --jsonrpc-port=8545 \n" +
                 "        - --jsonrpc-experimental \n" +
+                "        - --jsonrpc-hosts=http://172.15.0.2:8545,http://172.15.0.2:8646 \n" +
                 "        - --no-warp \n" +
                 "        volumes: \n"+
                 "        - ./chaindata:/home/parity/.local/share/io.parity.ethereum/ \n"+
