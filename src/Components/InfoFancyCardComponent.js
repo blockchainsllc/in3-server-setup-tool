@@ -84,7 +84,7 @@ export default function InfoFancyCardComponent() {
      
       <CardMedia
         className={classes.cover}
-        image="/static/images/img.jpg"
+        image="/static/images/bc-logo.png"
         title="Live from space album cover"
       />
 

@@ -36,12 +36,10 @@ import React, { Component } from 'react';
 import RegistrationComponent from '../Components/RegistrationComponent';
 import ethWallet from 'ethereumjs-wallet';
 import MessageComponent from '../Components/MessageComponent';
-import defaultConfig from '../defaultConfig';
 import NodeRegistry from '../Contract/NodeRegistry';
 import ERC20 from '../Contract/ERC20Wrapper';
 import wETH from '../Contract/wETH';
 import Web3 from 'web3';
-import { padStart } from 'in3-common/js/src/util/util';
 
 const in3Common = require('in3-common');
 const ethUtil = require('ethereumjs-util');
@@ -375,7 +373,7 @@ export default class RegistrationContainer extends Component {
     registerin3 = () => {
         // Modern DApp Browsers
         if (window.ethereum) {
-            var web3 = new Web3(window.ethereum);
+            const web3 = new Web3(window.ethereum);
             try {
                 window.ethereum.enable().then(() => {
 
@@ -388,7 +386,7 @@ export default class RegistrationContainer extends Component {
         }
         // Legacy DApp Browsers
         else if (window.web3) {
-            var web3 = new Web3(window.web3.currentProvider);
+            const web3 = new Web3(window.web3.currentProvider);
             this.sendRegTransaction(web3, window);
         }
         // Non-DApp Browsers

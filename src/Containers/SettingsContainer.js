@@ -37,7 +37,6 @@ import SettingsComponent from '../Components/SettingsComponent';
 import ethWallet from 'ethereumjs-wallet';
 import DialogComponent from '../Components/DialogComponent';
 import MessageComponent from '../Components/MessageComponent';
-import defaultConfig from '../defaultConfig';
 
 export default class SettingsContainer extends Component {
     constructor(props) {
@@ -147,7 +146,7 @@ export default class SettingsContainer extends Component {
             "        - "+(url.port?url.port:'80')+":8500/tcp                                             # open the port to be accessed by the public \n" +
             "        command: \n" +
             "        - --privateKey=/secure/" + encPKFileName + "                # internal path to the key \n" +
-            "        - --privateKeyPassphrase=" + (this.state.keyphrase1.split("$").join("$$")) + "                                # passphrase to unlock the key. " + (this.state.keyphrase1.indexOf('$') != -1 ? "Passphrase in this docker compose file is escaped. \n":"\n" ) +
+            "        - --privateKeyPassphrase=" + (this.state.keyphrase1.split("$").join("$$")) + "                                # passphrase to unlock the key. " + (this.state.keyphrase1.indexOf('$') !== -1 ? "Passphrase in this docker compose file is escaped. \n":"\n" ) +
             "        - --chain=" + this.NW[this.state.network] + "                                                # chain \n" +
             "        - --rpcUrl=" + (this.state.ethnodeurl === '' ? "http://192.168.1.3:8545" : this.state.ethnodeurl) + "                            # URL of the eth client \n" +
             "        - --registry=" + this.state.noderegistry + "      #Incubed Registry contract address \n" +
