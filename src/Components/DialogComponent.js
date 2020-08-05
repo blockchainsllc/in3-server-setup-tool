@@ -132,7 +132,7 @@ const DialogComponent = (props) => {
                     <Alert severity="info" fullWidth>Make sure you already exported encrypted private key and created 'chaindata' dir on same path where you will export docker-compose.yml</Alert>
                     <Alert severity="info" fullWidth>Also make sure you give required rights for using 'chaindata' dir by 'chmod a+rwx -R chaindata'. </Alert>
                     <br></br>For more details visit:&nbsp;
-                    <a href="https://in3.readthedocs.io/en/latest/getting_started.html"  target="_blank">https://in3.readthedocs.io/en/latest/getting_started.html</a>
+                    <a href="https://in3.readthedocs.io/en/latest/getting_started.html" rel="noopener noreferrer" target="_blank">https://in3.readthedocs.io/en/latest/getting_started.html</a>
           </Typography>
                 </DialogContent>
                 <DialogActions>

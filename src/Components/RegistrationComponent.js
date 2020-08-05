@@ -295,7 +295,7 @@ const RegistrationComponent = (props) => {
                                 />
 
                             </FormGroup>
-                            <a href='https://in3.readthedocs.io/en/develop/spec.html#node-structure' target="_blank">Details of node Capabilities</a>
+                            <a href='https://in3.readthedocs.io/en/develop/spec.html#node-structure' rel="noopener noreferrer" target="_blank">Details of node Capabilities</a>
                         </FormControl>
                     </Grid>
 
