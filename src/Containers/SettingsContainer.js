@@ -41,16 +41,15 @@ import MessageComponent from '../Components/MessageComponent';
 export default class SettingsContainer extends Component {
     constructor(props) {
         super(props);
-        
         this.NW = {
             "Mainnet": "0x1",
-            "Kovan": "0x2a",
+            "Ewc": "0xf6",
             "Goerli": "0x5"
         };
 
         this.contracts = {
             "Mainnet": "0x6c095a05764a23156efd9d603eada144a9b1af33",
-            "Kovan": "0xf14d54e349ac971ab6280d6d99f7152c9a06b0b3",
+            "Ewc": "0x638428ebaa190c6c6331a3a02f3b8c5d8310986b",
             "Goerli": "0x635cccc1db6fc9e3b029814720595092affba12f"
         }
 
