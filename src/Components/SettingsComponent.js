@@ -165,9 +165,9 @@ const SettingsComponent = (props) => {
                                 />
 
                                 <FormControlLabel
-                                    value="Kovan"
+                                    value="Ewc"
                                     control={<Radio color="primary" />}
-                                    label="Kovan"
+                                    label="Ewc"
                                 />
 
                                 <FormControlLabel

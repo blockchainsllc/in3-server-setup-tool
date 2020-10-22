@@ -30,7 +30,7 @@ There are three sections in wizard app metadata settings, server settings, and r
 1. Metadata Settings: These are not mandatory settings but your organization name, profile icon, organiation description and URL could be specified here. Then this will start appearing on IN3 dashboard.
 
 2. Server Settings: 
-    * The settings provided here will generate docker-compose.yml file that could be used for running incubed server. First step is to select network ( Mainnet, Kovan, Goerli) this selection will automatically populate predeployed incubed registry contract address.
+    * The settings provided here will generate docker-compose.yml file that could be used for running incubed server. First step is to select network ( Mainnet, Ewc, Goerli) this selection will automatically populate predeployed incubed registry contract address.
 
 
     * logging level flag is used for specifying logs output. Minimum height is used by server so that server will only sign blocks after that height. Like if you specify 8 as minimum height the server will only sign blocks after ( latest - 8 ).
